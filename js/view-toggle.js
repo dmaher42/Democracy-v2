@@ -10,7 +10,28 @@
     const toggle = $('#toggleViewBtn');
     if (loadBtn && toggle) {
       toggle.className = ''; // reset
-      loadBtn.classList.forEach(c => toggle.classList.add(c));
+      const loadClasses = new Set(loadBtn.classList);
+      loadClasses.forEach(c => {
+        if (c === 'btn-primary') {
+          toggle.classList.add('btn-secondary');
+        } else {
+          toggle.classList.add(c);
+        }
+      });
+      if (!loadClasses.has('btn-primary')) {
+        toggle.classList.add('btn-secondary');
+      }
+      if (!toggle.classList.contains('btn')) {
+        toggle.classList.add('btn');
+      }
+      if (loadClasses.has('focus-ring')) {
+        toggle.classList.add('focus-ring');
+      }
+      if (!toggle.classList.contains('focus-ring')) {
+        toggle.classList.add('focus-ring');
+      }
+    } else if (toggle) {
+      toggle.classList.add('btn', 'btn-secondary', 'focus-ring');
     }
   }
 
