@@ -39,6 +39,8 @@
     selectedForPrint: getStoredArray(STORAGE_KEYS.selected)
   };
 
+  let hasLoggedEmptyActivities = false;
+
   const printArea = document.createElement('section');
   printArea.className = 'peo-print-area';
   printArea.setAttribute('aria-hidden', 'true');
@@ -53,26 +55,41 @@
 
   const DATA_URL = 'data/peo-y9-activities.json';
   const embeddedData = typeof window !== 'undefined' ? window.__PEO_Y9_ACTIVITIES__ : null;
+  let activitiesLoadPromise = null;
 
-  loadActivitiesData();
+  initialiseWhenReady();
 
-  function loadActivitiesData(){
-    fetch(DATA_URL)
-      .then(function(response){
-        if(!response.ok){ throw new Error('Network response was not ok'); }
-        return response.json();
-      })
-      .then(function(data){
-        initialiseData(data);
-        populateFilters();
-        renderActivities({ preserveOpen: false });
-      })
-      .catch(function(error){
-        if(tryFallbackData(error)){
-          return;
-        }
-        showActivitiesLoadError(error);
-      });
+  function initialiseWhenReady(){
+    const startLoad = function(){
+      activitiesLoadPromise = loadActivitiesData().catch(function(){ return false; });
+      return activitiesLoadPromise;
+    };
+
+    if(document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', startLoad, { once: true });
+    } else {
+      startLoad();
+    }
+  }
+
+  async function loadActivitiesData(){
+    try {
+      const response = await fetch(DATA_URL, { cache: 'no-store' });
+      if(!response.ok){
+        throw new Error('Network response was not ok (status ' + response.status + ')');
+      }
+      const payload = await response.json();
+      initialiseData(payload);
+      populateFilters();
+      renderActivities({ preserveOpen: false });
+      return true;
+    } catch(error){
+      if(tryFallbackData(error)){
+        return true;
+      }
+      showActivitiesLoadError(error);
+      throw error;
+    }
   }
 
   function tryFallbackData(originalError){
@@ -99,16 +116,15 @@
 
   function showActivitiesLoadError(error){
     console.error('Unable to load PEO activities', error);
-    grid.innerHTML = '';
+    if(!grid){ return; }
     const message = document.createElement('div');
     message.className = 'empty-state';
     message.textContent = 'We could not load the PEO activities right now. Please refresh to try again.';
-    grid.appendChild(message);
+    grid.replaceChildren(message);
   }
 
   function initialiseData(data){
-    if(!data || !Array.isArray(data.topics)){ return; }
-    state.topics = data.topics.slice();
+    state.topics = normaliseTopics(data);
     state.activities = state.topics.flatMap(function(topic, index){
       const activities = Array.isArray(topic.activities) ? topic.activities : [];
       return activities.map(function(activity){
@@ -116,6 +132,42 @@
       });
     });
     pruneStoredIds();
+    return state.activities.length > 0;
+  }
+
+  function normaliseTopics(payload){
+    if(!payload){ return []; }
+    if(Array.isArray(payload.topics)){
+      return payload.topics.map(function(topic, index){
+        return normaliseTopic(topic, index);
+      });
+    }
+
+    const fallbackList = resolveActivityList(payload);
+    if(!fallbackList.length){ return []; }
+
+    return [{
+      id: 'all',
+      title: 'All activities',
+      color: '#0f172a',
+      activities: fallbackList
+    }];
+  }
+
+  function normaliseTopic(topic, index){
+    const safeTopic = Object.assign({}, topic || {});
+    safeTopic.id = safeTopic.id || ('topic-' + (index + 1));
+    safeTopic.title = safeTopic.title || ('Topic ' + (index + 1));
+    safeTopic.color = safeTopic.color || '#0f172a';
+    safeTopic.activities = Array.isArray(safeTopic.activities) ? safeTopic.activities : [];
+    return safeTopic;
+  }
+
+  function resolveActivityList(payload){
+    if(Array.isArray(payload)){ return payload.slice(); }
+    if(payload && Array.isArray(payload.activities)){ return payload.activities.slice(); }
+    if(payload && Array.isArray(payload.items)){ return payload.items.slice(); }
+    return [];
   }
 
   function pruneStoredIds(){
@@ -221,13 +273,12 @@
     const preserveOpen = options.preserveOpen !== false;
     const openIds = preserveOpen ? getOpenActivityIds() : new Set();
 
-    grid.innerHTML = '';
+    if(!grid){ return; }
+
+    grid.replaceChildren();
     if(!state.activities.length){
       updateResultsSummary(resultsSummary, 0);
-      const empty = document.createElement('div');
-      empty.className = 'empty-state';
-      empty.textContent = 'No activities available.';
-      grid.appendChild(empty);
+      grid.appendChild(createNoActivitiesMessage());
       return;
     }
 
@@ -263,6 +314,8 @@
       if(a.topicIndex !== b.topicIndex){ return a.topicIndex - b.topicIndex; }
       return a.activity.title.localeCompare(b.activity.title, undefined, { sensitivity: 'base' });
     });
+
+    hasLoggedEmptyActivities = false;
 
     filtered.forEach(function(entry){
       const activity = entry.activity;
@@ -491,6 +544,17 @@
 
       grid.appendChild(article);
     });
+  }
+
+  function createNoActivitiesMessage(){
+    if(!hasLoggedEmptyActivities){
+      console.warn('PEO Y9: no activities loaded. Check fetch path, filters, or schema.');
+      hasLoggedEmptyActivities = true;
+    }
+    const message = document.createElement('p');
+    message.className = 'empty-state';
+    message.textContent = 'No activities found. Try “Update Resources” or check your network tab.';
+    return message;
   }
 
   function getOpenActivityIds(){

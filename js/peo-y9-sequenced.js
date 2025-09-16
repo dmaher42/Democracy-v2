@@ -28,6 +28,8 @@
     expanded: new Set()
   };
 
+  let hasLoggedEmptySequence = false;
+
   const reduceMotion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false;
 
   const TOPIC_ACCENTS = {
@@ -58,26 +60,41 @@
 
   const DATA_URL = 'data/peo-y9-sequenced.json';
   const embeddedData = typeof window !== 'undefined' ? window.__PEO_Y9_SEQUENCED__ : null;
+  let sequenceLoadPromise = null;
 
-  loadSequenceData();
+  initialiseWhenReady();
 
-  function loadSequenceData(){
-    fetch(DATA_URL)
-      .then(function(response){
-        if(!response.ok){ throw new Error('Network response was not ok'); }
-        return response.json();
-      })
-      .then(function(data){
-        initialiseData(data);
-        populateWeekSelect();
-        renderSequence();
-      })
-      .catch(function(error){
-        if(tryFallbackData(error)){
-          return;
-        }
-        showSequenceLoadError(error);
-      });
+  function initialiseWhenReady(){
+    const startLoad = function(){
+      sequenceLoadPromise = loadSequenceData().catch(function(){ return false; });
+      return sequenceLoadPromise;
+    };
+
+    if(document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', startLoad, { once: true });
+    } else {
+      startLoad();
+    }
+  }
+
+  async function loadSequenceData(){
+    try {
+      const response = await fetch(DATA_URL, { cache: 'no-store' });
+      if(!response.ok){
+        throw new Error('Network response was not ok (status ' + response.status + ')');
+      }
+      const payload = await response.json();
+      initialiseData(payload);
+      populateWeekSelect();
+      renderSequence();
+      return true;
+    } catch(error){
+      if(tryFallbackData(error)){
+        return true;
+      }
+      showSequenceLoadError(error);
+      throw error;
+    }
   }
 
   function tryFallbackData(originalError){
@@ -105,11 +122,10 @@
   function showSequenceLoadError(error){
     console.error('Unable to load PEO sequenced activities', error);
     if(!grid){ return; }
-    grid.innerHTML = '';
     const message = document.createElement('div');
     message.className = 'empty-state';
     message.textContent = 'We could not load the sequenced plan right now. Please refresh to try again.';
-    grid.appendChild(message);
+    grid.replaceChildren(message);
   }
 
   function attachEventListeners(){
@@ -153,13 +169,25 @@
   }
 
   function initialiseData(data){
-    if(!data || !Array.isArray(data.sequence)){ return; }
-    state.items = data.sequence.slice().sort(function(a, b){
+    state.items = normaliseSequence(data);
+    pruneStoredIds();
+    return state.items.length > 0;
+  }
+
+  function normaliseSequence(payload){
+    const list = resolveSequenceList(payload);
+    return list.slice().sort(function(a, b){
       if(a.week !== b.week){ return a.week - b.week; }
       if(a.lessonOrder !== b.lessonOrder){ return a.lessonOrder - b.lessonOrder; }
-      return a.title.localeCompare(b.title, undefined, { sensitivity: 'base' });
+      return (a.title || '').localeCompare(b.title || '', undefined, { sensitivity: 'base' });
     });
-    pruneStoredIds();
+  }
+
+  function resolveSequenceList(payload){
+    if(Array.isArray(payload)){ return payload.slice(); }
+    if(payload && Array.isArray(payload.sequence)){ return payload.sequence.slice(); }
+    if(payload && Array.isArray(payload.items)){ return payload.items.slice(); }
+    return [];
   }
 
   function populateWeekSelect(){
@@ -183,14 +211,11 @@
 
   function renderSequence(){
     if(!grid){ return; }
-    grid.innerHTML = '';
+    grid.replaceChildren();
 
     if(!state.items.length){
       updateResultsSummary(resultsSummary, 0);
-      const empty = document.createElement('div');
-      empty.className = 'empty-state';
-      empty.textContent = 'No sequenced activities available yet.';
-      grid.appendChild(empty);
+      grid.appendChild(createNoSequenceMessage());
       return;
     }
 
@@ -215,10 +240,12 @@
     if(!filtered.length){
       const empty = document.createElement('div');
       empty.className = 'empty-state';
-      empty.textContent = 'No activities match your filters yet.';
+      empty.textContent = 'No sequenced activities match your filters yet. Adjust your filters to see more lessons.';
       grid.appendChild(empty);
       return;
     }
+
+    hasLoggedEmptySequence = false;
 
     let currentWeek = null;
     filtered.forEach(function(item){
@@ -228,6 +255,17 @@
       }
       grid.appendChild(buildCard(item));
     });
+  }
+
+  function createNoSequenceMessage(){
+    if(!hasLoggedEmptySequence){
+      console.warn('PEO Y9 sequenced: no activities loaded. Check fetch path, filters, or schema.');
+      hasLoggedEmptySequence = true;
+    }
+    const message = document.createElement('p');
+    message.className = 'empty-state';
+    message.textContent = 'No sequenced activities found. Try “Update Resources” or check your network tab.';
+    return message;
   }
 
   function buildCard(item){
