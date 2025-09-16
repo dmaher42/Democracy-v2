@@ -9,6 +9,7 @@
   const favoritesBtn = section.querySelector('#showFavorites2');
   const printBtn = section.querySelector('#printSelected2');
   const grid = section.querySelector('#seqGrid');
+  const resultsSummary = createResultsSummary(searchInput);
 
   const STORAGE_KEYS = {
     teacherMode: 'peoY9Seq.teacherMode',
@@ -150,6 +151,7 @@
     grid.innerHTML = '';
 
     if(!state.items.length){
+      updateResultsSummary(resultsSummary, 0);
       const empty = document.createElement('div');
       empty.className = 'empty-state';
       empty.textContent = 'No sequenced activities available yet.';
@@ -172,6 +174,8 @@
       }
       return true;
     });
+
+    updateResultsSummary(resultsSummary, filtered.length);
 
     if(!filtered.length){
       const empty = document.createElement('div');
@@ -214,7 +218,7 @@
 
     const title = document.createElement('span');
     title.className = 'activity-title';
-    title.textContent = item.title;
+    setHighlightedText(title, item.title);
     toggle.appendChild(title);
 
     const meta = document.createElement('div');
@@ -222,7 +226,7 @@
 
     const weekChip = document.createElement('span');
     weekChip.className = 'sequence-chip sequence-chip--week';
-    weekChip.textContent = 'Week ' + item.week + ' · Lesson ' + item.lessonOrder;
+    setHighlightedText(weekChip, 'Week ' + item.week + ' · Lesson ' + item.lessonOrder);
     meta.appendChild(weekChip);
 
     if(item.duration){
@@ -242,7 +246,7 @@
     topicIcon.textContent = accent.icon;
     const topicLabel = document.createElement('span');
     topicLabel.className = 'topic-label';
-    topicLabel.textContent = item.topicTitle;
+    setHighlightedText(topicLabel, item.topicTitle);
     topicChip.appendChild(topicIcon);
     topicChip.appendChild(topicLabel);
     meta.appendChild(topicChip);
@@ -316,7 +320,10 @@
     if(item.grouping){
       const grouping = document.createElement('p');
       grouping.className = 'grouping-label';
-      grouping.textContent = 'Grouping: ' + item.grouping;
+      grouping.appendChild(document.createTextNode('Grouping: '));
+      const groupingValue = document.createElement('span');
+      setHighlightedText(groupingValue, item.grouping);
+      grouping.appendChild(groupingValue);
       body.appendChild(grouping);
     }
 
@@ -327,7 +334,7 @@
         body.appendChild(liHeading);
 
         const liParagraph = document.createElement('p');
-        liParagraph.textContent = item.visibleLearning.learningIntentions;
+        setHighlightedText(liParagraph, item.visibleLearning.learningIntentions);
         body.appendChild(liParagraph);
       }
 
@@ -339,7 +346,7 @@
         const scList = document.createElement('ul');
         item.visibleLearning.successCriteria.forEach(function(criteria){
           const li = document.createElement('li');
-          li.textContent = criteria;
+          setHighlightedText(li, criteria);
           scList.appendChild(li);
         });
         body.appendChild(scList);
@@ -354,7 +361,7 @@
       const objectivesList = document.createElement('ul');
       item.objectives.forEach(function(obj){
         const li = document.createElement('li');
-        li.textContent = obj;
+        setHighlightedText(li, obj);
         objectivesList.appendChild(li);
       });
       body.appendChild(objectivesList);
@@ -368,7 +375,7 @@
       const materialsList = document.createElement('ul');
       item.materials.forEach(function(material){
         const li = document.createElement('li');
-        li.textContent = material;
+        setHighlightedText(li, material);
         materialsList.appendChild(li);
       });
       body.appendChild(materialsList);
@@ -382,7 +389,7 @@
       const stepsList = document.createElement('ol');
       item.steps.forEach(function(step){
         const li = document.createElement('li');
-        li.textContent = step;
+        setHighlightedText(li, step);
         stepsList.appendChild(li);
       });
       body.appendChild(stepsList);
@@ -393,7 +400,10 @@
       const label = document.createElement('strong');
       label.textContent = 'Assessment:';
       assessment.appendChild(label);
-      assessment.appendChild(document.createTextNode(' ' + item.assessment));
+      assessment.appendChild(document.createTextNode(' '));
+      const assessmentText = document.createElement('span');
+      setHighlightedText(assessmentText, item.assessment);
+      assessment.appendChild(assessmentText);
       body.appendChild(assessment);
     }
 
@@ -412,7 +422,16 @@
         anchor.href = link.url;
         anchor.target = '_blank';
         anchor.rel = 'noopener noreferrer';
-        anchor.innerHTML = labelText + '<span class="outbound-icon" aria-hidden="true">↗</span><span class="sr-only"> opens in a new tab</span>';
+        setHighlightedText(anchor, labelText);
+        const icon = document.createElement('span');
+        icon.className = 'outbound-icon';
+        icon.setAttribute('aria-hidden', 'true');
+        icon.textContent = '↗';
+        const srOnly = document.createElement('span');
+        srOnly.className = 'sr-only';
+        srOnly.textContent = ' opens in a new tab';
+        anchor.appendChild(icon);
+        anchor.appendChild(srOnly);
         list.appendChild(anchor);
       });
       linksWrap.appendChild(list);
@@ -429,7 +448,7 @@
       const tipsList = document.createElement('ul');
       item.teacherTips.forEach(function(tip){
         const li = document.createElement('li');
-        li.textContent = tip;
+        setHighlightedText(li, tip);
         tipsList.appendChild(li);
       });
       tipsWrap.appendChild(tipsList);
@@ -674,6 +693,62 @@
 
   function isSelected(id){
     return state.selected.indexOf(id) > -1;
+  }
+
+  function createResultsSummary(input){
+    if(!input || !input.parentNode){ return null; }
+    const summary = document.createElement('span');
+    summary.className = 'search-results-count';
+    summary.setAttribute('role', 'status');
+    summary.setAttribute('aria-live', 'polite');
+    summary.textContent = '';
+    input.insertAdjacentElement('afterend', summary);
+    return summary;
+  }
+
+  function updateResultsSummary(summaryEl, count){
+    if(!summaryEl){ return; }
+    const value = typeof count === 'number' && !isNaN(count) ? count : 0;
+    summaryEl.textContent = value === 1 ? '1 result' : value + ' results';
+  }
+
+  function setHighlightedText(element, text){
+    if(!element){ return; }
+    const value = text == null ? '' : String(text);
+    element.textContent = '';
+    if(!value){
+      return;
+    }
+
+    if(!state.searchTerm){
+      element.textContent = value;
+      return;
+    }
+
+    const term = state.searchTerm;
+    const pattern = escapeRegExp(term);
+    if(!pattern){
+      element.textContent = value;
+      return;
+    }
+
+    const regex = new RegExp('(' + pattern + ')', 'ig');
+    const parts = value.split(regex);
+    const termLower = term.toLowerCase();
+    parts.forEach(function(part){
+      if(!part){ return; }
+      if(part.toLowerCase() === termLower){
+        const mark = document.createElement('mark');
+        mark.textContent = part;
+        element.appendChild(mark);
+      } else {
+        element.appendChild(document.createTextNode(part));
+      }
+    });
+  }
+
+  function escapeRegExp(str){
+    return str.replace(/[.*+?^${}()|[\]\]/g, '\$&');
   }
 
   function focusHeadingForHash(){
