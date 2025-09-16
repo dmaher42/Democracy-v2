@@ -730,7 +730,7 @@
   }
 
   function escapeRegExp(str){
-    return str.replace(/[.*+?^${}()|[\]\]/g, '\$&');
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\$&');
   }
   function debounce(fn, wait){
     let timeout;
