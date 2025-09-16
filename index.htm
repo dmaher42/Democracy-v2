@@ -85,38 +85,85 @@
       <!-- Tab Panels -->
       <div id="panel" aria-live="polite"></div>
 
-      <section id="peo-y9" class="section">
-        <h2 tabindex="-1">PEO Year 9 Activities</h2>
-
-        <!-- Controls -->
-        <div class="controls">
-          <input id="searchActivities" type="search" placeholder="Search activities, tags, objectives…" aria-label="Search activities" />
-          <select id="filterTopic" aria-label="Filter by topic"></select>
-          <select id="filterType" aria-label="Filter by type"></select>
-          <button id="filterFavorites" aria-pressed="false">Favorites</button>
-          <button id="toggleTeacherMode" aria-pressed="false">Teacher Mode: Off</button>
-          <button id="printSelected">Print/Export Selected</button>
+      <div class="space-y-4" id="peoTabsContainer">
+        <div class="no-print">
+          <div
+            class="inline-flex flex-wrap gap-2 rounded-2xl border border-slate-200 bg-white/80 p-1 shadow-sm"
+            role="tablist"
+            aria-label="PEO Year 9 activity views"
+            aria-orientation="horizontal"
+            data-peo-tablist
+          >
+            <button
+              type="button"
+              id="peoTab-activities"
+              class="px-4 py-2 text-sm font-semibold rounded-xl border bg-slate-900 text-white border-slate-900 shadow transition-colors focus-ring"
+              role="tab"
+              aria-selected="true"
+              aria-controls="peo-y9"
+              data-peo-tab="activities"
+            >
+              Activities Library
+            </button>
+            <button
+              type="button"
+              id="peoTab-sequenced"
+              class="px-4 py-2 text-sm font-semibold rounded-xl border bg-white text-slate-700 border-slate-300 transition-colors focus-ring"
+              role="tab"
+              aria-selected="false"
+              aria-controls="peo-y9-sequenced"
+              data-peo-tab="sequenced"
+            >
+              Sequenced Plan
+            </button>
+          </div>
         </div>
 
-        <!-- Rendered cards go here -->
-        <div id="activitiesGrid" class="grid"></div>
-      </section>
+        <section
+          id="peo-y9"
+          class="section"
+          role="tabpanel"
+          aria-labelledby="peoTab-activities"
+          data-peo-tab-panel="activities"
+        >
+          <h2 tabindex="-1">PEO Year 9 Activities</h2>
 
-      <section id="peo-y9-sequenced" class="section">
-        <h2 tabindex="-1">PEO Year 9 – Sequenced Activities</h2>
+          <!-- Controls -->
+          <div class="controls">
+            <input id="searchActivities" type="search" placeholder="Search activities, tags, objectives…" aria-label="Search activities" />
+            <select id="filterTopic" aria-label="Filter by topic"></select>
+            <select id="filterType" aria-label="Filter by type"></select>
+            <button id="filterFavorites" aria-pressed="false">Favorites</button>
+            <button id="toggleTeacherMode" aria-pressed="false">Teacher Mode: Off</button>
+            <button id="printSelected">Print/Export Selected</button>
+          </div>
 
-        <div class="controls">
-          <label class="sr-only" for="sequenceWeek">Jump to week</label>
-          <select id="sequenceWeek"></select>
+          <!-- Rendered cards go here -->
+          <div id="activitiesGrid" class="grid"></div>
+        </section>
 
-          <input id="searchSeq" type="search" placeholder="Search activities, aims, tags…" aria-label="Search activities" />
-          <button id="toggleTeacherMode2" aria-pressed="false">Teacher Mode: Off</button>
-          <button id="showFavorites2" aria-pressed="false">Show Favourites</button>
-          <button id="printSelected2">Print/Export Selected</button>
-        </div>
+        <section
+          id="peo-y9-sequenced"
+          class="section"
+          role="tabpanel"
+          aria-labelledby="peoTab-sequenced"
+          data-peo-tab-panel="sequenced"
+        >
+          <h2 tabindex="-1">PEO Year 9 – Sequenced Activities</h2>
 
-        <div id="seqGrid" class="grid"></div>
-      </section>
+          <div class="controls">
+            <label class="sr-only" for="sequenceWeek">Jump to week</label>
+            <select id="sequenceWeek"></select>
+
+            <input id="searchSeq" type="search" placeholder="Search activities, aims, tags…" aria-label="Search activities" />
+            <button id="toggleTeacherMode2" aria-pressed="false">Teacher Mode: Off</button>
+            <button id="showFavorites2" aria-pressed="false">Show Favourites</button>
+            <button id="printSelected2">Print/Export Selected</button>
+          </div>
+
+          <div id="seqGrid" class="grid"></div>
+        </section>
+      </div>
     </section>
 
     <section id="dispView" class="space-y-6" hidden aria-hidden="true">
@@ -178,6 +225,193 @@ function safeConfirm(message){
     return true;
   } catch(e){ return true; }
 }
+
+function setupPeoActivitiesTabs(){
+  var tablist = document.querySelector('[data-peo-tablist]');
+  if(!tablist){ return; }
+
+  var buttons = Array.prototype.slice.call(tablist.querySelectorAll('[data-peo-tab]'));
+  if(!buttons.length){ return; }
+
+  var panels = Array.prototype.slice.call(document.querySelectorAll('[data-peo-tab-panel]'));
+  if(!panels.length){ return; }
+
+  var storageKey = 'peoY9.sectionTab';
+  var activeClasses = ['bg-slate-900','text-white','border-slate-900','shadow'];
+  var inactiveClasses = ['bg-white','text-slate-700','border-slate-300'];
+  var tabNames = new Set(buttons.map(function(btn){ return btn.dataset.peoTab; }).filter(Boolean));
+  if(tabNames.size === 0){ return; }
+
+  var activeTab = null;
+  var printRestore = null;
+
+  function getPanel(tabName){
+    for(var i=0; i<panels.length; i++){
+      if(panels[i].dataset && panels[i].dataset.peoTabPanel === tabName){
+        return panels[i];
+      }
+    }
+    return null;
+  }
+
+  function applyButtonState(btn, isActive){
+    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    btn.setAttribute('tabindex', isActive ? '0' : '-1');
+    activeClasses.forEach(function(cls){ btn.classList.toggle(cls, isActive); });
+    inactiveClasses.forEach(function(cls){ btn.classList.toggle(cls, !isActive); });
+  }
+
+  function applyPanelState(panel, isActive){
+    panel.hidden = !isActive;
+    panel.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+    panel.setAttribute('tabindex', isActive ? '0' : '-1');
+  }
+
+  function activate(tabName, options){
+    if(!tabNames.has(tabName)){ return; }
+    options = options || {};
+    if(activeTab === tabName && !options.force){ return; }
+    activeTab = tabName;
+
+    buttons.forEach(function(btn){
+      applyButtonState(btn, btn.dataset.peoTab === tabName);
+    });
+
+    panels.forEach(function(panel){
+      applyPanelState(panel, panel.dataset && panel.dataset.peoTabPanel === tabName);
+    });
+
+    if(!options.skipStore){
+      ssSet(storageKey, tabName);
+    }
+
+    if(options.focusHeading){
+      var panel = getPanel(tabName);
+      if(panel){
+        var heading = panel.querySelector('h2');
+        if(heading && typeof heading.focus === 'function'){
+          try { heading.focus({ preventScroll: true }); }
+          catch(err){ heading.focus(); }
+        }
+      }
+    }
+  }
+
+  function tabFromHash(){
+    var hash = window.location.hash ? window.location.hash.slice(1) : '';
+    if(!hash){ return ''; }
+    for(var i=0; i<panels.length; i++){
+      if(panels[i].id === hash){
+        return panels[i].dataset.peoTabPanel || '';
+      }
+    }
+    return '';
+  }
+
+  function getInitialTab(){
+    var fromHash = tabFromHash();
+    if(fromHash && tabNames.has(fromHash)){ return fromHash; }
+    var stored = ssGet(storageKey, '');
+    if(stored && tabNames.has(stored)){ return stored; }
+    for(var i=0; i<buttons.length; i++){
+      var btn = buttons[i];
+      if(btn.getAttribute('aria-selected') === 'true' && tabNames.has(btn.dataset.peoTab)){
+        return btn.dataset.peoTab;
+      }
+    }
+    return buttons[0].dataset.peoTab;
+  }
+
+  function updateHash(tabName){
+    var panel = getPanel(tabName);
+    if(!panel){ return; }
+    try {
+      var url = new URL(window.location.href);
+      url.hash = panel.id;
+      history.replaceState(null, '', url);
+    } catch(err){
+      try {
+        if(window.location.hash !== '#' + panel.id){
+          window.location.hash = panel.id;
+        }
+      } catch(_){}
+    }
+  }
+
+  var initial = getInitialTab();
+  activate(initial, { skipStore: true, force: true });
+
+  tablist.addEventListener('click', function(event){
+    var btn = event.target.closest('[data-peo-tab]');
+    if(!btn){ return; }
+    event.preventDefault();
+    var tabName = btn.dataset.peoTab;
+    if(!tabNames.has(tabName)){ return; }
+    activate(tabName);
+    updateHash(tabName);
+  });
+
+  tablist.addEventListener('keydown', function(event){
+    var key = event.key;
+    if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].indexOf(key) === -1){ return; }
+    var currentIndex = buttons.indexOf(document.activeElement);
+    if(currentIndex === -1){ return; }
+    event.preventDefault();
+    var targetIndex = currentIndex;
+    if(key === 'ArrowLeft' || key === 'ArrowUp'){
+      targetIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+    } else if(key === 'ArrowRight' || key === 'ArrowDown'){
+      targetIndex = (currentIndex + 1) % buttons.length;
+    } else if(key === 'Home'){
+      targetIndex = 0;
+    } else if(key === 'End'){
+      targetIndex = buttons.length - 1;
+    }
+    var targetButton = buttons[targetIndex];
+    if(targetButton){
+      targetButton.focus();
+      var tabName = targetButton.dataset.peoTab;
+      activate(tabName);
+      updateHash(tabName);
+    }
+  });
+
+  window.addEventListener('hashchange', function(){
+    var fromHash = tabFromHash();
+    if(fromHash && fromHash !== activeTab){
+      activate(fromHash, { force: true, focusHeading: true });
+    }
+  });
+
+  window.addEventListener('beforeprint', function(){
+    printRestore = [];
+    panels.forEach(function(panel){
+      if(panel.hidden){
+        panel.hidden = false;
+        panel.setAttribute('aria-hidden', 'false');
+        panel.dataset.peoPrintWasHidden = 'true';
+        printRestore.push(panel);
+      }
+    });
+  });
+
+  window.addEventListener('afterprint', function(){
+    if(!printRestore){ return; }
+    printRestore.forEach(function(panel){
+      if(panel.dataset.peoPrintWasHidden === 'true'){
+        panel.hidden = true;
+        panel.setAttribute('aria-hidden', 'true');
+        delete panel.dataset.peoPrintWasHidden;
+      }
+    });
+    printRestore = null;
+    if(activeTab){
+      activate(activeTab, { skipStore: true, force: true });
+    }
+  });
+}
+
+setupPeoActivitiesTabs();
 
 const DEFAULT_PLAN = {
   meta: {
