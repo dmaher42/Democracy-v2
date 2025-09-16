@@ -1,0 +1,1151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Year 9 Civics & Citizenship – Unit Plan (Single HTML)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/peo-y9.css" />
+  <script defer src="js/peo-y9.js"></script>
+  <script defer src="js/peo-y9-sequenced.js"></script>
+  <style>
+    :root{ --ring: 219 14% 28%; }
+    .focus-ring:focus{ outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+    @media print {
+      header, nav.no-print, .no-print{ display:none !important }
+      main{ padding:0 !important }
+      body{ background:#fff }
+      a[href]::after{ content:" (" attr(href) ")"; font-size: .85em; color:#64748b }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-slate-100 to-slate-200 text-slate-900">
+  <a class="skip-link" href="#mainContent">Skip to content</a>
+  <!-- Top Bar -->
+  <header class="sticky top-0 z-10 border-b border-slate-200 backdrop-blur bg-white/70">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap items-center gap-4 justify-between">
+      <div>
+        <h1 id="title" class="text-2xl font-bold tracking-tight">Year 9 Civics & Citizenship – Healthy Democracy</h1>
+        <p id="subtitle" class="text-sm text-slate-600">How might a deeper understanding of living in a healthy democracy restore trust and foster civically minded students?</p>
+      </div>
+      <div class="flex items-center gap-2 no-print">
+        <button id="printBtn" class="rounded-xl px-3 py-2 bg-white border border-slate-300 focus-ring" title="Print">Print</button>
+        <button id="exportBtn" class="rounded-xl px-3 py-2 bg-white border border-slate-300 focus-ring" title="Export JSON">Export JSON</button>
+        <label class="rounded-xl px-3 py-2 bg-white border border-slate-300 focus-ring cursor-pointer" title="Import JSON">
+          Import JSON
+          <input id="importInput" type="file" accept="application/json" class="hidden" />
+        </label>
+        <button id="loadSaPresetBtn" class="rounded-xl px-3 py-2 bg-white border border-amber-400 text-amber-700 focus-ring" title="Load SA Equal Before the Law?">
+          Load SA “Equal Before the Law?”
+        </button>
+        <button id="toggleViewBtn" class="rounded-xl px-3 py-2 bg-white border border-amber-400 text-amber-700 focus-ring" aria-pressed="false">
+          Switch to Dispositions
+        </button>
+        <button id="bulkResBtn"
+          class="rounded-xl px-3 py-2 bg-white border border-sky-400 text-sky-700 focus-ring"
+          title="Bulk update Resources">
+          Update Resources
+        </button>
+      </div>
+    </div>
+    <nav class="no-print border-t border-slate-200 bg-white/60">
+      <div class="max-w-6xl mx-auto px-4 py-2">
+        <ul class="flex flex-wrap items-center gap-3 text-sm font-semibold text-slate-700">
+          <li>
+            <a class="rounded-lg px-3 py-2 hover:bg-slate-100 focus-ring" href="#peo-y9">PEO Year 9 Activities</a>
+          </li>
+          <li>
+            <a class="rounded-lg px-3 py-2 hover:bg-slate-100 focus-ring" href="#peo-y9-sequenced">PEO Y9 – Sequenced</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main id="mainContent" class="max-w-6xl mx-auto p-4">
+    <section id="weekView" class="space-y-6">
+      <!-- Unit Details Card -->
+      <section class="bg-white/80 backdrop-blur rounded-2xl shadow p-5 border border-slate-200">
+        <div class="flex items-start justify-between gap-4">
+          <h2 class="text-xl font-semibold tracking-tight">Unit Details</h2>
+          <div class="flex items-center gap-3 no-print">
+            <div class="inline-flex rounded-2xl border border-slate-300 bg-slate-100 p-1" id="curriculumToggle" role="tablist" aria-label="Curriculum toggle">
+              <button data-mode="SA" class="px-3 py-1.5 text-sm rounded-xl bg-white shadow font-semibold" role="tab" aria-selected="true">SA</button>
+              <button data-mode="ACARA" class="px-3 py-1.5 text-sm rounded-xl text-slate-600" role="tab" aria-selected="false">ACARA</button>
+            </div>
+            <button id="quickEdit" class="rounded-xl px-3 py-1.5 bg-slate-900 text-white focus-ring" title="Quick edit">Quick Edit</button>
+          </div>
+        </div>
+        <div class="mt-3 grid md:grid-cols-2 gap-6" id="unitMeta" aria-live="polite"></div>
+      </section>
+
+      <!-- Tabs -->
+      <nav class="flex flex-wrap gap-2 no-print" id="tabs" role="tablist" aria-label="Sections"></nav>
+
+      <!-- Tab Panels -->
+      <div id="panel" aria-live="polite"></div>
+
+      <div class="space-y-4" id="peoTabsContainer">
+        <div class="no-print">
+          <div
+            class="inline-flex flex-wrap gap-2 rounded-2xl border border-slate-200 bg-white/80 p-1 shadow-sm"
+            role="tablist"
+            aria-label="PEO Year 9 activity views"
+            aria-orientation="horizontal"
+            data-peo-tablist
+          >
+            <button
+              type="button"
+              id="peoTab-activities"
+              class="px-4 py-2 text-sm font-semibold rounded-xl border bg-slate-900 text-white border-slate-900 shadow transition-colors focus-ring"
+              role="tab"
+              aria-selected="true"
+              aria-controls="peo-y9"
+              data-peo-tab="activities"
+            >
+              Activities Library
+            </button>
+            <button
+              type="button"
+              id="peoTab-sequenced"
+              class="px-4 py-2 text-sm font-semibold rounded-xl border bg-white text-slate-700 border-slate-300 transition-colors focus-ring"
+              role="tab"
+              aria-selected="false"
+              aria-controls="peo-y9-sequenced"
+              data-peo-tab="sequenced"
+            >
+              Sequenced Plan
+            </button>
+          </div>
+        </div>
+
+        <section
+          id="peo-y9"
+          class="section"
+          role="tabpanel"
+          aria-labelledby="peoTab-activities"
+          data-peo-tab-panel="activities"
+        >
+          <h2 tabindex="-1">PEO Year 9 Activities</h2>
+
+          <!-- Controls -->
+          <div class="controls">
+            <input id="searchActivities" type="search" placeholder="Search activities, tags, objectives…" aria-label="Search activities" />
+            <select id="filterTopic" aria-label="Filter by topic"></select>
+            <select id="filterType" aria-label="Filter by type"></select>
+            <button id="filterFavorites" aria-pressed="false">Favorites</button>
+            <button id="toggleTeacherMode" aria-pressed="false">Teacher Mode: Off</button>
+            <button id="printSelected">Print/Export Selected</button>
+          </div>
+
+          <!-- Rendered cards go here -->
+          <div id="activitiesGrid" class="grid"></div>
+        </section>
+
+        <section
+          id="peo-y9-sequenced"
+          class="section"
+          role="tabpanel"
+          aria-labelledby="peoTab-sequenced"
+          data-peo-tab-panel="sequenced"
+        >
+          <h2 tabindex="-1">PEO Year 9 – Sequenced Activities</h2>
+
+          <div class="controls">
+            <label class="sr-only" for="sequenceWeek">Jump to week</label>
+            <select id="sequenceWeek"></select>
+
+            <input id="searchSeq" type="search" placeholder="Search activities, aims, tags…" aria-label="Search activities" />
+            <button id="toggleTeacherMode2" aria-pressed="false">Teacher Mode: Off</button>
+            <button id="showFavorites2" aria-pressed="false">Show Favourites</button>
+            <button id="printSelected2">Print/Export Selected</button>
+          </div>
+
+          <div id="seqGrid" class="grid"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="dispView" class="space-y-6" hidden aria-hidden="true">
+      <section class="bg-white/80 backdrop-blur rounded-2xl shadow p-5 border border-slate-200">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-semibold tracking-tight">Dispositions Focus</h2>
+            <p id="dispositionsUnitTitle" class="text-sm text-slate-600"></p>
+          </div>
+          <div id="dispositionsMeta" class="text-right text-xs text-slate-500"></div>
+        </div>
+        <div class="mt-4 grid gap-4 md:grid-cols-2" id="dispositionsGrid" aria-live="polite"></div>
+      </section>
+
+      <section class="bg-white/80 backdrop-blur rounded-2xl shadow p-5 border border-slate-200">
+        <h2 class="text-xl font-semibold tracking-tight">Observation prompts</h2>
+        <div class="mt-3 prose prose-slate max-w-none" id="dispositionsPrompts"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="max-w-6xl mx-auto px-4 py-8 text-xs text-slate-500">
+    <div>© <span id="year"></span> Unit plan scaffold • Aligned to ACARA & South Australian Curriculum (Year 9 Civics & Citizenship).</div>
+  </footer>
+
+<script>
+/**
+ * Vanilla JS single-file site (no React) to avoid framework errors.
+ * Data is editable, exported/imported as JSON and persisted in localStorage.
+ *
+ * Patch: ensure SA preset button works across iframes/sandboxes; fix truncated self-tests.
+ */
+
+// --- Deep clone utility ---
+function deepClone(obj){
+  try { return structuredClone(obj); } catch (e) { return JSON.parse(JSON.stringify(obj)); }
+}
+
+// --- Safe sessionStorage helpers ---
+function ssGet(key, fallback){ try { return sessionStorage.getItem(key) || fallback; } catch(e){ return fallback; } }
+function ssSet(key, val){ try { sessionStorage.setItem(key, val); } catch(e){} }
+
+// --- Toast helper ---
+function notify(msg){
+  var box = document.getElementById('toasts');
+  if(!box){ box = document.createElement('div'); box.id='toasts'; box.className='fixed bottom-4 right-4 z-50 space-y-2'; document.body.appendChild(box); }
+  var n = document.createElement('div');
+  n.setAttribute('role','status');
+  n.className='rounded-xl bg-slate-900 text-white px-3 py-2 shadow';
+  n.textContent = msg;
+  box.appendChild(n);
+  setTimeout(function(){ if(n && n.parentNode) n.parentNode.removeChild(n); }, 3000);
+}
+
+// --- Safe confirm ---
+function safeConfirm(message){
+  try {
+    if(typeof window.confirm === 'function') return window.confirm(message);
+    return true;
+  } catch(e){ return true; }
+}
+
+function setupPeoActivitiesTabs(){
+  var tablist = document.querySelector('[data-peo-tablist]');
+  if(!tablist){ return; }
+
+  var buttons = Array.prototype.slice.call(tablist.querySelectorAll('[data-peo-tab]'));
+  if(!buttons.length){ return; }
+
+  var panels = Array.prototype.slice.call(document.querySelectorAll('[data-peo-tab-panel]'));
+  if(!panels.length){ return; }
+
+  var storageKey = 'peoY9.sectionTab';
+  var activeClasses = ['bg-slate-900','text-white','border-slate-900','shadow'];
+  var inactiveClasses = ['bg-white','text-slate-700','border-slate-300'];
+  var tabNames = new Set(buttons.map(function(btn){ return btn.dataset.peoTab; }).filter(Boolean));
+  if(tabNames.size === 0){ return; }
+
+  var activeTab = null;
+  var printRestore = null;
+
+  function getPanel(tabName){
+    for(var i=0; i<panels.length; i++){
+      if(panels[i].dataset && panels[i].dataset.peoTabPanel === tabName){
+        return panels[i];
+      }
+    }
+    return null;
+  }
+
+  function applyButtonState(btn, isActive){
+    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    btn.setAttribute('tabindex', isActive ? '0' : '-1');
+    activeClasses.forEach(function(cls){ btn.classList.toggle(cls, isActive); });
+    inactiveClasses.forEach(function(cls){ btn.classList.toggle(cls, !isActive); });
+  }
+
+  function applyPanelState(panel, isActive){
+    panel.hidden = !isActive;
+    panel.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+    panel.setAttribute('tabindex', isActive ? '0' : '-1');
+  }
+
+  function activate(tabName, options){
+    if(!tabNames.has(tabName)){ return; }
+    options = options || {};
+    if(activeTab === tabName && !options.force){ return; }
+    activeTab = tabName;
+
+    buttons.forEach(function(btn){
+      applyButtonState(btn, btn.dataset.peoTab === tabName);
+    });
+
+    panels.forEach(function(panel){
+      applyPanelState(panel, panel.dataset && panel.dataset.peoTabPanel === tabName);
+    });
+
+    if(!options.skipStore){
+      ssSet(storageKey, tabName);
+    }
+
+    if(options.focusHeading){
+      var panel = getPanel(tabName);
+      if(panel){
+        var heading = panel.querySelector('h2');
+        if(heading && typeof heading.focus === 'function'){
+          try { heading.focus({ preventScroll: true }); }
+          catch(err){ heading.focus(); }
+        }
+      }
+    }
+  }
+
+  function tabFromHash(){
+    var hash = window.location.hash ? window.location.hash.slice(1) : '';
+    if(!hash){ return ''; }
+    for(var i=0; i<panels.length; i++){
+      if(panels[i].id === hash){
+        return panels[i].dataset.peoTabPanel || '';
+      }
+    }
+    return '';
+  }
+
+  function getInitialTab(){
+    var fromHash = tabFromHash();
+    if(fromHash && tabNames.has(fromHash)){ return fromHash; }
+    var stored = ssGet(storageKey, '');
+    if(stored && tabNames.has(stored)){ return stored; }
+    for(var i=0; i<buttons.length; i++){
+      var btn = buttons[i];
+      if(btn.getAttribute('aria-selected') === 'true' && tabNames.has(btn.dataset.peoTab)){
+        return btn.dataset.peoTab;
+      }
+    }
+    return buttons[0].dataset.peoTab;
+  }
+
+  function updateHash(tabName){
+    var panel = getPanel(tabName);
+    if(!panel){ return; }
+    try {
+      var url = new URL(window.location.href);
+      url.hash = panel.id;
+      history.replaceState(null, '', url);
+    } catch(err){
+      try {
+        if(window.location.hash !== '#' + panel.id){
+          window.location.hash = panel.id;
+        }
+      } catch(_){}
+    }
+  }
+
+  var initial = getInitialTab();
+  activate(initial, { skipStore: true, force: true });
+
+  tablist.addEventListener('click', function(event){
+    var btn = event.target.closest('[data-peo-tab]');
+    if(!btn){ return; }
+    event.preventDefault();
+    var tabName = btn.dataset.peoTab;
+    if(!tabNames.has(tabName)){ return; }
+    activate(tabName);
+    updateHash(tabName);
+  });
+
+  tablist.addEventListener('keydown', function(event){
+    var key = event.key;
+    if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].indexOf(key) === -1){ return; }
+    var currentIndex = buttons.indexOf(document.activeElement);
+    if(currentIndex === -1){ return; }
+    event.preventDefault();
+    var targetIndex = currentIndex;
+    if(key === 'ArrowLeft' || key === 'ArrowUp'){
+      targetIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+    } else if(key === 'ArrowRight' || key === 'ArrowDown'){
+      targetIndex = (currentIndex + 1) % buttons.length;
+    } else if(key === 'Home'){
+      targetIndex = 0;
+    } else if(key === 'End'){
+      targetIndex = buttons.length - 1;
+    }
+    var targetButton = buttons[targetIndex];
+    if(targetButton){
+      targetButton.focus();
+      var tabName = targetButton.dataset.peoTab;
+      activate(tabName);
+      updateHash(tabName);
+    }
+  });
+
+  window.addEventListener('hashchange', function(){
+    var fromHash = tabFromHash();
+    if(fromHash && fromHash !== activeTab){
+      activate(fromHash, { force: true, focusHeading: true });
+    }
+  });
+
+  window.addEventListener('beforeprint', function(){
+    printRestore = [];
+    panels.forEach(function(panel){
+      if(panel.hidden){
+        panel.hidden = false;
+        panel.setAttribute('aria-hidden', 'false');
+        panel.dataset.peoPrintWasHidden = 'true';
+        printRestore.push(panel);
+      }
+    });
+  });
+
+  window.addEventListener('afterprint', function(){
+    if(!printRestore){ return; }
+    printRestore.forEach(function(panel){
+      if(panel.dataset.peoPrintWasHidden === 'true'){
+        panel.hidden = true;
+        panel.setAttribute('aria-hidden', 'true');
+        delete panel.dataset.peoPrintWasHidden;
+      }
+    });
+    printRestore = null;
+    if(activeTab){
+      activate(activeTab, { skipStore: true, force: true });
+    }
+  });
+}
+
+setupPeoActivitiesTabs();
+
+const DEFAULT_PLAN = {
+  meta: {
+    title: "Year 9 Civics & Citizenship – Healthy Democracy",
+    subtitle: "How might a deeper understanding of living in a healthy democracy restore trust and foster civically minded students?",
+    duration: "6–8 weeks",
+    author: "Daniel Maher",
+    school: "Murray Bridge High School (SA)",
+    lastUpdated: new Date().toISOString().slice(0,10)
+  },
+  curriculumView: "SA",
+  learningIntentions: [
+    "Understand how Australia's Constitution structures a federal democracy and enables change (referendums, separation of powers).",
+    "Explain how laws are made, interpreted and applied (parliament, courts, rights, responsibilities).",
+    "Evaluate how media (including social media) shapes identity, trust and civic participation.",
+    "Plan and justify a civic action addressing a school or community issue, incorporating diverse perspectives."
+  ],
+  successCriteria: [
+    "I can analyse how the Constitution and federal system support democratic processes and change (AC9HC9K01).",
+    "I can explain how a federal policy idea becomes law and the influences on that process (AC9HC9K02).",
+    "I can describe court hierarchy, roles and rights of accused/victims; explain civil vs criminal (AC9HC9K03–K04).",
+    "I can evaluate strategies for civic participation and design a feasible, ethical action (AC9HC9S04).",
+    "I use evidence and correct civics terms to argue a position (AC9HC9S05)."
+  ],
+  dispositions: [
+    { name: "Socially conscious", notes: "Participates in actions that benefit community; recognises democratic processes." },
+    { name: "Discerning", notes: "Checks sources; weighs perspectives; anticipates consequences of actions." },
+    { name: "Principled", notes: "Acts with integrity; argues respectfully using evidence; supports others facing ethical challenges." }
+  ],
+  capabilities: {
+    CriticalInquiry: [
+      "Develop and modify inquiry questions about political/legal systems and civic issues (AC9HC9S01)",
+      "Locate, select and compare data/ideas from multiple sources (AC9HC9S02)"
+    ],
+    AnalysisEvaluation: [
+      "Analyse information to identify/evaluate different perspectives (AC9HC9S03)"
+    ],
+    CivicParticipation: [
+      "Evaluate decision-making methods and participation strategies; plan a civic action (AC9HC9S04)"
+    ],
+    Communicating: [
+      "Create evidence-based descriptions/explanations/arguments using civics terms (AC9HC9S05)"
+    ]
+  },
+  curriculumLinks: {
+    ACARA: [
+      { code: "AC9HC9K01", text: "Role of the Australian Constitution; federal system; process for constitutional change (referendum)." },
+      { code: "AC9HC9K02", text: "Legislative processes shaping federal policy; influences on policy." },
+      { code: "AC9HC9K03", text: "Court features, jurisdictions; operations of courts/tribunals." },
+      { code: "AC9HC9K04", text: "Roles in trials; rights of accused and victims; access to justice; legal aid." },
+      { code: "AC9HC9K05", text: "How/why groups participate in civic life and global citizenship." },
+      { code: "AC9HC9K06", text: "Influence of media (incl. social media) on identity and attitudes to diversity." },
+      { code: "AC9HC9S01–S05", text: "Skills: questioning/researching; analysis/evaluation; participation/decision-making; communicating." }
+    ],
+    SA: [
+      { code: "Learning Standard", text: "Investigate systems/issues; analyse perspectives; evaluate participation strategies; communicate with evidence." },
+      { code: "Dispositions", text: "Socially conscious; Discerning; Principled." },
+      { code: "Capabilities", text: "Critical inquiry; Ethical understanding; Intercultural understanding." },
+      { code: "Courts & Legal Systems", text: "Ensure just outcomes; roles, rights and access to justice." },
+      { code: "Constitution & Government", text: "Framework/principles of governance; referendums; policy process." },
+      { code: "Civic Participation & Media", text: "Worldviews; platforms; media influence on identity and fairness." }
+    ]
+  },
+  assessment: {
+    formative: [
+      { name: "Exit tickets (ongoing)", description: "Quick checks after key activities.", evidence: "1–2 sentences each" }
+    ],
+    summative: [
+      { name: "Civic Action Proposal (Group)", description: "Plan a small-scale action to improve fairness/participation in school/community (e.g., student voice survey, awareness campaign). Include consultation & evaluation.", evidence: "2–3 page proposal + 5–7 min presentation.", criteria: ["Needs analysis & stakeholder voices","Feasibility & ethics","Use of evidence & civics terms","Evaluation plan"] },
+      { name: "Evidence-Based Argument (Individual)", description: "Persuasive essay responding to the inquiry question, referencing Constitution/courts/media and action project.", evidence: "800–1000 words with citations.", criteria: ["Thesis & structure","Use of evidence","Civics terminology","Evaluation of perspectives"] }
+    ]
+  },
+  sequence: [
+    { week: 1, title: "Launching the Inquiry: What is a Healthy Democracy?", lessons: [
+      { title: "Hook & Prior Knowledge", activities: [
+        "Gallery walk of headlines about trust in institutions; students place green/red dots (trust/distrust).",
+        "Mini-lecture: features of healthy democracy (participation, fairness, accountability, separation of powers).",
+        "Inquiry reframing: 'How can understanding democracy help us trust each other and improve our community?'"
+      ], resources: ["Projector, sticky dots, digital board"] },
+      { title: "Question Crafting (AC9HC9S01)", activities: [
+        "Students draft 3 questions; class sorts into themes (Constitution, courts, media, participation).",
+        "Establish research teams & roles."
+      ], resources: ["Question stems, wall chart/Padlet"] }
+    ]},
+    { week: 2, title: "Constitution & Change (AC9HC9K01)", lessons: [
+      { title: "Federation to Referendums", activities: [
+        "Timeline jigsaw: founders' aims, compromises, key sections (plain English).",
+        "Case carousel: 1967 Referendum, 1999 Republic — success vs failure."
+      ], resources: ["Timeline cards, case briefs"] },
+      { title: "Policy to Law (AC9HC9K02)", activities: [
+        "Flowchart: idea → bill → committees → vote → assent; influence points (parties, interest groups, public service, citizens).",
+        "Choose a contemporary federal policy; map influences."
+      ], resources: ["Process flow templates"] }
+    ]},
+    { week: 3, title: "Courts, Rights & Justice (AC9HC9K03–K04)", lessons: [
+      { title: "Court Hierarchy & Roles", activities: [
+        "Build a court ladder (Magistrates → District → Supreme → Federal → High Court).",
+        "Stations: judge, lawyer, jury, accused, victim; civil vs criminal scenarios."
+      ], resources: ["Hierarchy posters, role cards"] },
+      { title: "Precedent & Interpretation", activities: [
+        "Mini-case: Mabo and native title; how precedent changes the law.",
+        "Exit ticket: How does the court system support a just democracy?"
+      ], resources: ["Case summary, exit ticket"] }
+    ]},
+    { week: 4, title: "Media, Identity & Trust (AC9HC9K06)", lessons: [
+      { title: "Media Representations", activities: [
+        "Analyse how groups are represented in sport/news; discuss impact on cohesion and trust.",
+        "Bias detector: headline rewrite challenge."
+      ], resources: ["Clippings, projector"] },
+      { title: "Source Reliability Clinic (AC9HC9S02–S03)", activities: [
+        "CRAAP/RECAP test on three sources covering the same issue; compare in teams."
+      ], resources: ["Source packs, rubric"] }
+    ]},
+    { week: 5, title: "Civic Action Project – Discover & Design (AC9HC9S04)", lessons: [
+      { title: "Needs Analysis & Stakeholders", activities: [
+        "Identify a school/community issue (participation, fairness, student voice).",
+        "Map stakeholders; plan consultations (survey/interviews)."
+      ], resources: ["Stakeholder map template"] },
+      { title: "Action Blueprint", activities: [
+        "Draft goals, actions, timeline, roles, ethics checklist, evaluation metrics."
+      ], resources: ["Blueprint one-pager"] }
+    ]},
+    { week: 6, title: "Civic Action Project – Build & Share", lessons: [
+      { title: "Prototype & Feedback", activities: [
+        "Create campaign materials (poster, short video, announcement, social post).",
+        "Peer feedback using success criteria."
+      ], resources: ["Canva/Slides, rubric"] },
+      { title: "Presentations", activities: [
+        "5–7 minute group presentations + Q&A."
+      ], resources: ["Timer, projector"] }
+    ]},
+    { week: 7, title: "Synthesis & Argument (AC9HC9S05)", lessons: [
+      { title: "Plan the Essay", activities: [
+        "PEEL/TEAL refresher; collect evidence; outline drafting."
+      ], resources: ["Essay planner"] },
+      { title: "Write & Confer", activities: [
+        "Draft in class; teacher conferencing; citation check."
+      ], resources: ["Writing tools"] }
+    ]},
+    { week: 8, title: "Reflection & Evaluation", lessons: [
+      { title: "Did We Restore Trust?", activities: [
+        "Revisit Week 1 dots; reflect on shifts in trust and civic identity.",
+        "Unit feedback + next steps for authentic participation at school."
+      ], resources: ["Reflection prompts"] }
+    ]}
+  ],
+  differentiation: [
+    "Choice boards for product (infographic, short video, Minecraft build of a 'healthy democracy' district, podcast).",
+    "Sentence starters/frames for arguments; vocabulary banks (jurisdiction, mandate, sovereignty, precedent).",
+    "Mini-lessons for reading complex sources; text simplification options.",
+    "Adjusted success criteria for students at Yr 7–8 literacy; extension: comparative case study of another democracy."
+  ],
+  pedagogy: [
+    "Visible Learning: clear intentions & success criteria every lesson; frequent feedback cycles.",
+    "Teacher-as-evaluator: exit tickets, mid-unit checks, conferencing logs to adjust teaching.",
+    "Peer learning: protocols for discussion (Socratic, think-pair-share, jigsaw)."
+  ],
+  resources: [
+    "PEO: Australian Constitution resources",
+    "Federal Parliament Education Office: law-making process materials",
+    "Local council website (civic participation examples)",
+    "ABC Education media literacy lessons"
+  ]
+};
+
+// --- SA Preset: Equal Before the Law? (4 weeks) ---
+const SA_EQUAL_BEFORE_LAW_PRESET = {
+  meta: {
+    title: "Year 9 Civics – Equal Before the Law?",
+    subtitle: "How do Australia’s constitutional rules, legal processes and civic participation work together to ensure people are equal before the law?",
+    duration: "4 weeks",
+    author: "Department for Education (SA) – adapted for classroom site",
+    school: "South Australia",
+    lastUpdated: new Date().toISOString().slice(0,10)
+  },
+  curriculumView: "SA",
+  learningIntentions: [
+    "Examine how the Australian Constitution underpins democracy and how referendums change it.",
+    "Explain legislative processes (idea → bill → committees → vote → assent) and influences on policy.",
+    "Explain features and jurisdictions of Australia’s courts; roles in trials; civil vs criminal.",
+    "Analyse how/why groups contribute to civic life; evaluate access to justice and participation.",
+    "Evaluate media’s influence (incl. social media) on identity, diversity and attitudes."
+  ],
+  successCriteria: [
+    "I can describe how referendums change the Constitution and why change is hard.",
+    "I can chart how a policy becomes a law and where influence occurs.",
+    "I can diagram the court hierarchy and explain roles/rights in trials.",
+    "I can compare perspectives on a legal issue and propose a reasoned reform.",
+    "I use evidence and civics terminology to justify a position."
+  ],
+  dispositions: [
+    { name: "Socially conscious", notes: "Participates in actions that benefit community; understands democratic systems." },
+    { name: "Discerning", notes: "Interrogates sources; recognises bias; evaluates consequences." },
+    { name: "Principled", notes: "Acts with integrity; argues respectfully; supports others." }
+  ],
+  capabilities: {
+    CriticalInquiry: [
+      "Develop/modify questions about systems and civic issues (AC9HC9S01)",
+      "Locate/compare information, data and ideas (AC9HC9S02)"
+    ],
+    AnalysisEvaluation: ["Analyse info to identify/evaluate perspectives (AC9HC9S03)"],
+    CivicParticipation: ["Evaluate methods/strategies for participation; plan action (AC9HC9S04)"],
+    Communicating: ["Create evidence-based explanations/arguments (AC9HC9S05)"]
+  },
+  curriculumLinks: {
+    SA: [
+      { code: "Learning Standard", text: "Investigate systems/issues; analyse perspectives; evaluate participation strategies; communicate with evidence." },
+      { code: "Dispositions", text: "Socially conscious; Discerning; Principled." },
+      { code: "Capabilities", text: "Critical inquiry; Ethical understanding; Intercultural understanding." },
+      { code: "Courts & Legal Systems", text: "Ensure just outcomes; roles, rights and access to justice." },
+      { code: "Constitution & Government", text: "Framework/principles of governance; referendums; policy process." },
+      { code: "Civic Participation & Media", text: "Worldviews; platforms; media influence on identity and fairness." }
+    ]
+  },
+  assessment: {
+    formative: [
+      { name: "Exit tickets (ongoing)", description: "Quick checks after key activities.", evidence: "1–2 sentences each" }
+    ],
+    summative: [
+      { name: "Law reform brainstorm & research proposal (Pairs)", description: "Lotus diagram + proposal on a social justice reform area.", evidence: "Diagram + 1–2 page proposal", criteria: ["Issue clarity","Feasibility","Evidence use","Ethics/impact"] },
+      { name: "Stakeholder circle of viewpoints (Pairs)", description: "Opposing perspectives with reasons/evidence.", evidence: "Annotated diagram", criteria: ["Perspective range","Evidence","Balance"] },
+      { name: "Media scan (Pairs)", description: "20y / 10y / current snapshots; how media shaped attitudes to reform.", evidence: "Poster/site/slides/folio", criteria: ["Comparative analysis","Representation & bias","Citations"] },
+      { name: "Final reform proposal (Pairs/Groups)", description: "Persuasive case for change; stakeholders; barriers; evaluation plan.", evidence: "Presentation or paper", criteria: ["Thesis & structure","Use of evidence","Civics terminology","Feasibility & evaluation"] }
+    ]
+  },
+  sequence: [
+    { week: 1, title: "Government & Democracy", lessons: [
+      { title: "The vibe vs the text of the Constitution", activities: [
+        "Big Paper silent conversation on what a constitution should contain.",
+        "PEO: ‘The Australian Constitution’ video; five-finger summaries (separation of powers, division of powers, rule of law, rep/responsible gov, rights).",
+        "Compare expectations with the actual text; revisit Big Paper."
+      ], resources: ["PEO: The Australian Constitution (video)", "Facing History: Big Paper strategy"] },
+      { title: "Policy → Law & referendums", activities: [
+        "Map ‘idea → bill → committees → vote → assent’; identify influence points.",
+        "Explore referendum double-majority and past outcomes.",
+        "Exit ticket: What makes constitutional change difficult?"
+      ], resources: ["PEO: Pass the Bill interactive", "AEC: Referendums – double majority"] }
+    ]},
+    { week: 2, title: "Law & Citizens", lessons: [
+      { title: "Court hierarchy & roles", activities: [
+        "Build SA + Federal court ladders; speed-research expert hunt.",
+        "Roles in trials: judge, lawyers, jury, accused, victims; civil vs criminal."
+      ], resources: ["PEO: Court hierarchy", "SA Legal Services: The Court System"] },
+      { title: "Access to justice", activities: [
+        "Barometer activity: ‘All people in Australia have the same access to justice’.",
+        "List and research barriers (literacy, finance, location, language, tech, trauma).",
+        "Exit ticket: Why have multiple court levels?"
+      ], resources: ["Law Council: Access to Justice", "Facing History: Barometer"] }
+    ]},
+    { week: 3, title: "Citizenship, Diversity & Identity", lessons: [
+      { title: "Advocacy & volunteering", activities: [
+        "Investigate orgs (e.g., Justice Reform Initiative, Migrant Justice Institute, WLSSA).",
+        "Discuss motivations/barriers to volunteering; examples of reform advocates."
+      ], resources: ["Justice Reform Initiative", "Migrant Justice Institute", "Women’s Legal Service (SA)"] },
+      { title: "Media scan", activities: [
+        "Collect 20y/10y/current media snapshots on the chosen issue.",
+        "Discuss representation, empathy/apathy, identity impacts, support/opposition.",
+        "Prepare comparative notes for the portfolio."
+      ], resources: ["ABC Education – media literacy", "PEO & gov sources for factual baselines"] }
+    ]},
+    { week: 4, title: "Reform Proposal & Share", lessons: [
+      { title: "Draft & feedback", activities: [
+        "Draft proposal; peer critique using success criteria; refine audience targeting (policy-makers, public, stakeholders)."
+      ], resources: ["Task criteria checklist"] },
+      { title: "Present & reflect", activities: [
+        "Presentations; Q&A; whole-class reflection on trust, fairness, and future action.",
+        "Exit ticket: ‘If a law seems unfair, I can do something about it’ — to what extent?"
+      ], resources: ["Presentation timer/slide deck"] }
+    ]}
+  ],
+  differentiation: [
+    "Choice of product (poster/site/slides/video) for portfolio tasks.",
+    "Sentence starters, vocabulary banks (jurisdiction, sovereignty, mandate, precedent).",
+    "Mini-lessons for source reliability; scaffolded note-taking.",
+    "Extensions: compare another jurisdiction’s approach to the same issue."
+  ],
+  pedagogy: [
+    "Visible Learning: clear intentions & success criteria; frequent exit tickets.",
+    "Peer protocols (Socratic, think-pair-share, jigsaw) for perspective-taking.",
+    "Teacher conferencing during writing & proposal planning."
+  ],
+  resources: [
+    "Attribution: ‘Equal Before the Law?’ Unit (SA Dept for Education, 2022).",
+    "PEO (peo.gov.au) • AEC Referendums • Law Council ‘Access to Justice’",
+    "Facing History strategies (Big Paper, Barometer)"
+  ]
+};
+
+// Helpers
+function $(sel, root){ return (root || document).querySelector(sel); }
+function $$(sel, root){ return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+const stateKey = 'yr9-civics-plan-html';
+let plan = loadState();
+let editMode = false;
+
+function loadState(){
+  try {
+    var raw = localStorage.getItem(stateKey);
+    return raw ? JSON.parse(raw) : deepClone(DEFAULT_PLAN);
+  } catch (e) {
+    return deepClone(DEFAULT_PLAN);
+  }
+}
+function saveState(){
+  try { localStorage.setItem(stateKey, JSON.stringify(plan)); } catch (e) {}
+}
+
+function render(){
+  document.getElementById('title').textContent = plan.meta.title;
+  document.getElementById('subtitle').textContent = plan.meta.subtitle;
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Unit meta card
+  var meta = document.getElementById('unitMeta');
+  meta.innerHTML = '';
+  if(editMode){
+    meta.appendChild(editMetaField('Title','title', plan.meta.title));
+    meta.appendChild(editMetaTextarea('Inquiry / Subtitle','subtitle', plan.meta.subtitle));
+    meta.appendChild(wrapGrid([
+      editMetaField('Duration','duration', plan.meta.duration),
+      editMetaField('Author','author', plan.meta.author),
+      editMetaField('Updated','lastUpdated', plan.meta.lastUpdated)
+    ]));
+  } else {
+    meta.innerHTML =
+      '<div class="grid grid-cols-2 gap-3 text-sm">\
+      <div><span class="font-medium">Duration:</span> ' + escapeHtml(plan.meta.duration) + '</div>\
+      <div><span class="font-medium">Author:</span> ' + escapeHtml(plan.meta.author) + '</div>\
+      <div><span class="font-medium">School:</span> ' + escapeHtml(plan.meta.school) + '</div>\
+      <div><span class="font-medium">Last updated:</span> ' + escapeHtml(plan.meta.lastUpdated) + '</div>\
+      </div>\
+      <div class="text-sm"><span class="font-medium">Dispositions:</span> ' + plan.dispositions.map(function(d){return escapeHtml(d.name);}).join(', ') + '</div>\
+      <div class="mt-2 text-sm"><span class="font-medium">Capabilities:</span> Critical inquiry · Ethical understanding · Intercultural understanding</div>\
+      <div class="mt-3">\
+        <div class="text-sm font-medium">Learning Intentions</div>\
+        <ul class="list-disc pl-5 text-sm space-y-1">' + plan.learningIntentions.map(function(li){return '<li>'+escapeHtml(li)+'</li>';}).join('') + '</ul>\
+      </div>';
+  }
+
+  // Curriculum toggle styling
+  $$('#curriculumToggle button').forEach(function(btn){
+    if(btn.dataset.mode===plan.curriculumView){
+      btn.classList.add('bg-white','shadow','font-semibold');
+      btn.classList.remove('text-slate-600');
+      btn.setAttribute('aria-selected','true');
+    } else {
+      btn.classList.remove('bg-white','shadow','font-semibold');
+      btn.classList.add('text-slate-600');
+      btn.setAttribute('aria-selected','false');
+    }
+  });
+
+  // Tabs
+  var tabs = ["Overview","Sequence","Assessment","Curriculum","Differentiation","Resources"];
+  var tabsEl = document.getElementById('tabs');
+  tabsEl.innerHTML = '';
+  tabs.forEach(function(t){
+    var b=document.createElement('button');
+    b.textContent=t; b.dataset.tab=t; b.setAttribute('role','tab');
+    b.className = 'px-4 py-2 rounded-xl border bg-white border-slate-300 focus-ring';
+    tabsEl.appendChild(b);
+  });
+  var lastTab = ssGet('yr9-tab', 'Overview');
+  selectTab(lastTab);
+  renderDispositionsView();
+}
+
+function editMetaField(label,key,val){
+  var w=document.createElement('div');
+  w.innerHTML = '<label class="text-xs uppercase text-slate-500">'+label+'</label>\
+    <input data-key="'+key+'" class="w-full rounded-xl border px-3 py-2 meta-edit" value="'+escapeHtml(val)+'" />';
+  return w;
+}
+function editMetaTextarea(label,key,val){
+  var w=document.createElement('div');
+  w.innerHTML = '<label class="text-xs uppercase text-slate-500">'+label+'</label>\
+    <textarea data-key="'+key+'" rows="3" class="w-full rounded-xl border px-3 py-2 meta-edit">'+escapeHtml(val)+'</textarea>';
+  return w;
+}
+function wrapGrid(children){
+  var g=document.createElement('div');
+  g.className='grid grid-cols-3 gap-3';
+  children.forEach(function(c){ g.appendChild(c); });
+  return g;
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, function(s){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[s]; });
+}
+
+function selectTab(tab){
+  ssSet('yr9-tab', tab);
+  $$('#tabs button').forEach(function(b){
+    if(b.dataset.tab===tab){
+      b.classList.remove('bg-white','border-slate-300');
+      b.classList.add('bg-slate-900','text-white','border-slate-900');
+      b.setAttribute('aria-selected','true');
+    } else {
+      b.classList.add('bg-white','border-slate-300');
+      b.classList.remove('bg-slate-900','text-white','border-slate-900');
+      b.setAttribute('aria-selected','false');
+    }
+  });
+  var panel = document.getElementById('panel');
+  panel.innerHTML='';
+  if(tab==='Overview') renderOverview(panel);
+  if(tab==='Sequence') renderSequence(panel);
+  if(tab==='Assessment') renderAssessment(panel);
+  if(tab==='Curriculum') renderCurriculum(panel);
+  if(tab==='Differentiation') renderDiff(panel);
+  if(tab==='Resources') renderResources(panel);
+}
+
+function renderOverview(root){
+  root.innerHTML = ''+
+  '<div class="grid lg:grid-cols-2 gap-6">' +
+    card('Success Criteria', listEditor(plan.successCriteria,'successCriteria','Add a success criterion…')) +
+    card('Unit Pedagogy (Visible Learning)', listEditor(plan.pedagogy,'pedagogy','Add a pedagogy note…')) +
+    card('Dispositions (SA)', '<ul class="list-disc pl-5 space-y-2">' + plan.dispositions.map(function(d){ return '<li><span class="font-medium">'+escapeHtml(d.name)+':</span> '+escapeHtml(d.notes)+'</li>'; }).join('') + '</ul>') +
+    card('Capabilities', '<ul class="list-disc pl-5 space-y-2">\
+      <li><span class="font-medium">Critical inquiry:</span> '+escapeHtml(plan.capabilities.CriticalInquiry.join('; '))+'</li>\
+      <li><span class="font-medium">Analysis & evaluation:</span> '+escapeHtml(plan.capabilities.AnalysisEvaluation.join('; '))+'</li>\
+      <li><span class="font-medium">Civic participation:</span> '+escapeHtml(plan.capabilities.CivicParticipation.join('; '))+'</li>\
+      <li><span class="font-medium">Communicating:</span> '+escapeHtml(plan.capabilities.Communicating.join('; '))+'</li>\
+    </ul>') +
+  '</div>';
+  bindListEditors(root);
+}
+
+function renderSequence(root){
+  root.innerHTML = (plan.sequence || []).map(function(block){
+    var lessonCount = (block.lessons && block.lessons.length) || 0;
+    return ''+
+    '<div class="rounded-2xl border border-slate-200 p-5 bg-white mb-4">'+
+      '<div class="flex items-center justify-between">'+
+        '<h4 class="text-lg font-semibold">Week '+block.week+': '+escapeHtml(block.title)+'</h4>'+
+        '<span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium border-slate-300 bg-slate-50">'+lessonCount+' lessons</span>'+
+      '</div>'+
+      '<div class="grid md:grid-cols-2 gap-4 mt-3">'+
+        ((block.lessons || []).map(function(lsn){
+          var acts = (lsn.activities && lsn.activities.length) ? '<div class="mt-2"><div class="text-sm font-medium">Activities</div><ul class="list-disc pl-5 text-sm space-y-1">'+ lsn.activities.map(function(a){return '<li>'+escapeHtml(a)+'</li>';}).join('') +'</ul></div>' : '';
+          var res = (lsn.resources && lsn.resources.length) ? '<div class="mt-2"><div class="text-sm font-medium">Resources</div><ul class="list-disc pl-5 text-sm space-y-1">'+ lsn.resources.map(function(r){return '<li>'+escapeHtml(r)+'</li>';}).join('') +'</ul></div>' : '';
+          return ''+
+          '<div class="rounded-xl border border-slate-200 p-4">'+
+            '<div class="font-semibold">'+escapeHtml(lsn.title)+'</div>'+ acts + res +
+          '</div>';
+        }).join(''))+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function renderAssessment(root){
+  var formList = (plan.assessment && plan.assessment.formative ? plan.assessment.formative : []).map(function(a){
+    return '<li><div class="font-medium">'+escapeHtml(a.name)+'</div><div class="text-sm">'+escapeHtml(a.description)+'</div><div class="text-xs text-slate-500">Evidence: '+escapeHtml(a.evidence)+'</div></li>';
+  }).join('');
+  var summList = (plan.assessment && plan.assessment.summative ? plan.assessment.summative : []).map(function(a){
+    var criteria = a.criteria ? '<div class="text-xs text-slate-500">Criteria: '+escapeHtml(a.criteria.join(' · '))+'</div>' : '';
+    return '<li><div class="font-medium">'+escapeHtml(a.name)+'</div><div class="text-sm">'+escapeHtml(a.description)+'</div>'+criteria+'<div class="text-xs text-slate-500">Evidence: '+escapeHtml(a.evidence)+'</div></li>';
+  }).join('');
+  root.innerHTML = ''+
+  '<div class="grid lg:grid-cols-2 gap-6">'+
+    card('Formative Assessment', '<ul class="list-disc pl-5 space-y-2">'+ formList +'</ul>')+
+    card('Summative Assessment', '<ul class="list-disc pl-5 space-y-2">'+ summList +'</ul>')+
+  '</div>';
+}
+
+function renderCurriculum(root){
+  var links = (plan.curriculumLinks && (plan.curriculumView==='SA' ? plan.curriculumLinks.SA : plan.curriculumLinks.ACARA)) || [];
+  var items = (links || []).map(function(c){ return '<li><span class="font-medium">'+escapeHtml(c.code)+':</span> '+escapeHtml(c.text)+'</li>'; }).join('');
+  root.innerHTML = ''+
+  '<div class="grid md:grid-cols-2 gap-6">'+
+    card(plan.curriculumView==='SA'? 'SA Curriculum Links':'ACARA Links', '<ul class="list-disc pl-5 space-y-2">'+ items +'</ul>')+
+    card('Learning Resources', listEditor(plan.resources,'resources','Add a resource or link description…'))+
+  '</div>';
+  bindListEditors(root);
+}
+
+function renderDiff(root){
+  root.innerHTML = card('Adjustments & Differentiation', listEditor(plan.differentiation,'differentiation','Add an adjustment idea…'));
+  bindListEditors(root);
+}
+
+function renderResources(root){
+  root.innerHTML = card('Teacher Notes', '<p class="text-sm">Use the Export button to save this plan as JSON. Import later to continue editing. Print generates a clean copy for PDP evidence or sharing.</p>\
+  <ul class="list-disc pl-5 text-sm space-y-1 mt-2">\
+    <li>Action project ideas: student voice survey, fairness policy explainer, media literacy mini-campaign, peer court role-play.</li>\
+    <li>Embed digital tools students enjoy (Canva, Google Slides, Minecraft civic-space builds).</li>\
+    <li>Establish discussion norms (respect, evidence, turn-taking) to cultivate principled discourse.</li>\
+  </ul>');
+}
+
+function renderDispositionsView(data){
+  var grid = document.getElementById('dispositionsGrid');
+  if(!grid){ return; }
+
+  var prompts = document.getElementById('dispositionsPrompts');
+  var unitTitle = document.getElementById('dispositionsUnitTitle');
+  var metaEl = document.getElementById('dispositionsMeta');
+
+  var metaSource = plan && plan.meta ? Object.assign({}, plan.meta) : {};
+  if(data && data.meta){
+    metaSource = Object.assign(metaSource, data.meta);
+  }
+
+  if(unitTitle){
+    var titleBits = [];
+    if(metaSource.title){ titleBits.push(metaSource.title); }
+    if(metaSource.duration){ titleBits.push(metaSource.duration); }
+    unitTitle.textContent = titleBits.join(' • ');
+  }
+
+  if(metaEl){
+    var metaBits = [];
+    if(metaSource.author){ metaBits.push('Author: ' + metaSource.author); }
+    if(metaSource.lastUpdated){ metaBits.push('Updated ' + metaSource.lastUpdated); }
+    metaEl.textContent = metaBits.join(' • ');
+  }
+
+  var dispositionsData;
+  if(Array.isArray(data)){
+    dispositionsData = data.slice();
+  } else if(data && Array.isArray(data.dispositions)){
+    dispositionsData = data.dispositions.slice();
+  } else {
+    dispositionsData = (plan && Array.isArray(plan.dispositions)) ? plan.dispositions.slice() : [];
+  }
+
+  if(!dispositionsData.length){
+    grid.innerHTML = '<p class="text-sm text-slate-600">No dispositions available yet.</p>';
+  } else {
+    grid.innerHTML = dispositionsData.map(function(item){
+      var name = item && item.name ? escapeHtml(item.name) : 'Disposition';
+      var notes = item && item.notes ? escapeHtml(item.notes) : 'Add notes to describe what this looks like in practice.';
+      return '<article class="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm h-full">'
+        + '<h3 class="text-lg font-semibold text-slate-900">' + name + '</h3>'
+        + '<p class="text-sm text-slate-600 mt-2">' + notes + '</p>'
+        + '</article>';
+    }).join('');
+  }
+
+  if(prompts){
+    if(!dispositionsData.length){
+      prompts.innerHTML = '<p class="text-sm text-slate-600">Use the 8-week plan view to add or import dispositions, then return here to capture evidence.</p>';
+    } else {
+      var promptItems = dispositionsData.map(function(item){
+        var name = item && item.name ? escapeHtml(item.name) : 'This disposition';
+        return '<li><span class="font-medium">' + name + ':</span> Where did students demonstrate this disposition? Collect quotes, artifacts or reflections as evidence.</li>';
+      });
+      promptItems.push('<li>Plan upcoming learning experiences that give students another opportunity to practise these dispositions.</li>');
+      prompts.innerHTML = '<ul class="list-disc pl-5 space-y-2">' + promptItems.join('') + '</ul>';
+    }
+  }
+}
+
+function card(title, inner){
+  return '<section class="bg-white/80 backdrop-blur rounded-2xl shadow p-5 border border-slate-200"><h2 class="text-xl font-semibold tracking-tight">'+escapeHtml(title)+'</h2><div class="mt-3 prose prose-slate max-w-none">'+inner+'</div></section>';
+}
+
+function listEditor(items, key, placeholder){
+  var list = (items || []).map(function(t,i){ return '<li class="group flex items-start gap-2"><span class="flex-1">'+escapeHtml(t)+'</span><button data-del="'+i+'" class="opacity-0 group-hover:opacity-100 text-xs text-red-600">remove</button></li>'; }).join('');
+  return '<ul class="list-disc pl-5 space-y-1" data-edit-key="'+key+'">'+ list +'</ul>\
+  <div class="mt-3 flex gap-2"><input class="flex-1 rounded-xl border border-slate-300 px-3 py-2" placeholder="'+escapeHtml(placeholder)+'" /><button class="rounded-xl px-3 py-2 bg-slate-900 text-white" data-add="1">Add</button></div>';
+}
+
+function bindListEditors(root){
+  $$("ul[data-edit-key]", root).forEach(function(ul){
+    var key=ul.dataset.editKey;
+    ul.addEventListener('click', function(e){
+      var btn=e.target.closest('[data-del]');
+      if(!btn) return;
+      var idx=parseInt(btn.dataset.del,10);
+      plan[key]=(plan[key]||[]).filter(function(_,i){return i!==idx;});
+      saveState(); selectTab(ssGet('yr9-tab','Overview'));
+    });
+    var addWrap = ul.nextElementSibling;
+    var addBtn = addWrap ? addWrap.querySelector('[data-add]') : null;
+    var input = addWrap ? addWrap.querySelector('input') : null;
+    if(addBtn && input){
+      addBtn.addEventListener('click', function(){
+        var v=input.value.trim(); if(!v) return; (plan[key]=plan[key]||[]).push(v); input.value=''; saveState(); selectTab(ssGet('yr9-tab','Overview'));
+      });
+    }
+  });
+}
+
+// --- Bulk Resources Editor ---
+function openResourcesEditor(){
+  // remove any existing overlay
+  var existing = document.getElementById('resEditorOverlay');
+  if (existing) existing.remove();
+
+  // build overlay
+  var overlay = document.createElement('div');
+  overlay.id = 'resEditorOverlay';
+  overlay.className = 'fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4';
+
+  // textarea content from plan.resources
+  var initial = (plan.resources || []).join('\n');
+
+  overlay.innerHTML = ''
+    + '<div role="dialog" aria-modal="true" aria-labelledby="resEditorTitle"'
+    + ' class="max-w-2xl w-full bg-white rounded-2xl shadow-2xl border border-slate-200">'
+    + '  <div class="p-4 border-b border-slate-200 flex items-center justify-between">'
+    + '    <h3 id="resEditorTitle" class="text-lg font-semibold">Update Resources</h3>'
+    + '    <button type="button" data-cancel'
+    + '      class="px-2 py-1 text-slate-600 hover:text-slate-900" aria-label="Close">✕</button>'
+    + '  </div>'
+    + '  <div class="p-4">'
+    + '    <p class="text-sm text-slate-600 mb-2">One resource per line. Titles, links or short descriptions.</p>'
+    + '    <textarea id="resEditorTextarea"'
+    + '      class="w-full h-64 rounded-xl border border-slate-300 px-3 py-2 font-mono text-sm"'
+    + '      placeholder="e.g. PEO: Australian Constitution resources&#10;AEC: Referendums – double majority&#10;Local council website (civic participation examples)"></textarea>'
+    + '  </div>'
+    + '  <div class="p-4 border-t border-slate-200 flex items-center justify-end gap-2">'
+    + '    <button type="button" data-cancel'
+    + '      class="rounded-xl px-3 py-2 border border-slate-300 bg-white">Cancel</button>'
+    + '    <button type="button" data-save'
+    + '      class="rounded-xl px-3 py-2 bg-slate-900 text-white">Save</button>'
+    + '  </div>'
+    + '</div>';
+
+  document.body.appendChild(overlay);
+
+  // load initial text
+  var ta = overlay.querySelector('#resEditorTextarea');
+  ta.value = initial;
+
+  // close helpers
+  function close(){ overlay.remove(); }
+  function onEsc(e){ if(e.key === 'Escape'){ close(); document.removeEventListener('keydown', onEsc); } }
+
+  // clicks
+  overlay.addEventListener('click', function(e){
+    if (e.target === overlay || e.target.closest('[data-cancel]')) { close(); }
+  });
+
+  // save
+  overlay.querySelector('[data-save]').addEventListener('click', function(){
+    var lines = ta.value.split('\n')
+      .map(function(s){ return s.trim(); })
+      .filter(function(s){ return s.length > 0; });
+
+    plan.resources = lines;
+    saveState();
+    render();
+    notify('Resources updated (' + lines.length + ' item' + (lines.length===1?'':'s') + ')');
+    close();
+  });
+
+  // escape key
+  document.addEventListener('keydown', onEsc);
+
+  // focus textarea
+  setTimeout(function(){ ta.focus(); ta.selectionStart = ta.value.length; ta.selectionEnd = ta.value.length; }, 0);
+}
+
+// Events
+$('#printBtn').addEventListener('click', function(){ window.print(); });
+$('#exportBtn').addEventListener('click', function(){
+  var blob = new Blob([JSON.stringify(plan, null, 2)], {type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url; a.download = (plan.meta.title || 'unit-plan').replace(/[^a-z0-9]+/gi,'-') + '.json'; a.click(); URL.revokeObjectURL(url);
+});
+$('#importInput').addEventListener('change', function(e){
+  var files = e.target.files; var f = files && files[0]; if(!f) return;
+  var r=new FileReader();
+  r.onload=function(){ try{ plan = JSON.parse(r.result); saveState(); render(); }catch(err){ alert('Invalid JSON'); } };
+  r.readAsText(f);
+});
+$('#quickEdit').addEventListener('click', function(){
+  editMode=!editMode; document.getElementById('quickEdit').textContent = editMode? 'Done':'Quick Edit';
+  if(!editMode){ $$('.meta-edit').forEach(function(inp){ var key=inp.dataset.key; plan.meta[key]=inp.value; }); saveState(); }
+  render();
+});
+$('#curriculumToggle').addEventListener('click', function(e){
+  var b=e.target.closest('button'); if(!b) return; plan.curriculumView=b.dataset.mode; saveState(); render();
+});
+$('#tabs').addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; selectTab(b.dataset.tab); });
+document.getElementById('bulkResBtn').addEventListener('click', openResourcesEditor);
+$('#loadSaPresetBtn').addEventListener('click', function(){
+  var ok = safeConfirm('Replace the current plan with the SA "Equal Before the Law?" preset?');
+  if(!ok) return;
+  try {
+    plan = deepClone(SA_EQUAL_BEFORE_LAW_PRESET);
+    ssSet('yr9-tab','Overview');
+    saveState();
+    render();
+    notify('Loaded SA preset: Equal Before the Law?');
+  } catch(err){
+    console.error('Failed to load SA preset', err);
+    notify('Sorry — failed to load the SA preset. See console for details.');
+  }
+});
+
+// --- Self-tests (basic runtime checks) ---
+function runSelfTests(){
+  var tests = [];
+  function t(name, fn){
+    try { fn(); tests.push({name:name, pass:true}); }
+    catch(e){ console.error('[TEST FAIL]', name, e); tests.push({name:name, pass:false, err:String(e)}); }
+  }
+  // Existing tests + a few more
+  t('plan.meta.title is string', function(){ if(typeof plan.meta.title !== 'string' || !plan.meta.title) throw 'missing title'; });
+  t('sequence is array of length >= 1', function(){ if(!Array.isArray(plan.sequence) || plan.sequence.length < 1) throw 'sequence empty'; });
+  t('assessment.summative has at least 1 task', function(){ if(!plan.assessment || !Array.isArray(plan.assessment.summative) || plan.assessment.summative.length < 1) throw 'no summative'; });
+  t('render functions exist', function(){ ['renderOverview','renderSequence','renderAssessment','renderCurriculum'].forEach(function(k){ if(typeof window[k] !== 'function') throw 'missing '+k; }); });
+  t('resources entries contain no raw newlines', function(){ (plan.resources||[]).forEach(function(r){ if(/\n/.test(r)) throw 'newline in resources item: '+r; }); });
+  t('sequence blocks have week (number) and title (string)', function(){ (plan.sequence||[]).forEach(function(b){ if(typeof b.week!=='number' || !b.title) throw 'bad block meta'; }); });
+  t('curriculum links are array-ish or empty', function(){ var links = (plan.curriculumLinks && (plan.curriculumLinks.SA || plan.curriculumLinks.ACARA)) || []; if(!Array.isArray(links)) throw 'links not array'; });
+  t('curriculumView is SA or ACARA', function(){ if(['SA','ACARA'].indexOf(plan.curriculumView)===-1) throw 'bad curriculumView'; });
+  console.log('[Self-tests]', tests);
+}
+
+// Initial render + tests
+render();
+runSelfTests();
+
+window.render8Week = function(data){
+  if(data && typeof data === 'object' && !Array.isArray(data) && data.meta && data.sequence){
+    try {
+      plan = deepClone(data);
+      saveState();
+    } catch (err) {
+      console.error('Unable to apply provided 8-week data', err);
+    }
+  }
+  render();
+};
+
+window.renderDispositions = function(data){
+  renderDispositionsView(data);
+};
+</script>
+<script src="js/view-toggle.js" defer></script>
+</body>
+</html>
