@@ -3,38 +3,6 @@
 
   const $ = (s, r=document) => r.querySelector(s);
 
-  // Try to style-match the existing "Load" button by cloning its classes
-  function styleMatchLoadButton() {
-    const loadBtn = Array.from(document.querySelectorAll('button, .btn, .button'))
-      .find(b => /\bload\b/i.test(b.textContent || ''));
-    const toggle = $('#toggleViewBtn');
-    if (loadBtn && toggle) {
-      toggle.className = ''; // reset
-      const loadClasses = new Set(loadBtn.classList);
-      loadClasses.forEach(c => {
-        if (c === 'btn-primary') {
-          toggle.classList.add('btn-secondary');
-        } else {
-          toggle.classList.add(c);
-        }
-      });
-      if (!loadClasses.has('btn-primary')) {
-        toggle.classList.add('btn-secondary');
-      }
-      if (!toggle.classList.contains('btn')) {
-        toggle.classList.add('btn');
-      }
-      if (loadClasses.has('focus-ring')) {
-        toggle.classList.add('focus-ring');
-      }
-      if (!toggle.classList.contains('focus-ring')) {
-        toggle.classList.add('focus-ring');
-      }
-    } else if (toggle) {
-      toggle.classList.add('btn', 'btn-secondary', 'focus-ring');
-    }
-  }
-
   function getInitialView() {
     // 1) URL param
     try {
@@ -110,8 +78,6 @@
     const disp = $('#dispView');
     const btn  = $('#toggleViewBtn');
     if (!week || !disp || !btn) return; // graceful no-op if structure isn’t ready
-
-    styleMatchLoadButton();
 
     let view = getInitialView();
     await applyView(view);
