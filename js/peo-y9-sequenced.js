@@ -150,6 +150,11 @@
   function renderSequence(){
     if(!grid){ return; }
     grid.innerHTML = '';
+    const searchTokens = getSearchTokens(state.searchTerm);
+    const highlightTokens = prepareHighlightTokens(searchTokens);
+    const highlight = function(value){
+      return highlightText(value, highlightTokens);
+    };
 
     if(!state.items.length){
       updateResultsSummary(0);
@@ -163,7 +168,7 @@
     const filtered = state.items.filter(function(item){
       if(state.weekFilter !== 'all' && String(item.week) !== state.weekFilter){ return false; }
       if(state.favoritesOnly && !isFavorite(item.id)){ return false; }
-      if(state.searchTerm){
+      if(searchTokens.length){
         const searchTarget = [
           item.title,
           (item.objectives || []).join(' '),
@@ -171,7 +176,10 @@
           item.visibleLearning ? (item.visibleLearning.successCriteria || []).join(' ') : '',
           (item.tags || []).join(' ')
         ].join(' ').toLowerCase();
-        if(searchTarget.indexOf(state.searchTerm) === -1){ return false; }
+        const matchesAll = searchTokens.every(function(token){
+          return searchTarget.indexOf(token) !== -1;
+        });
+        if(!matchesAll){ return false; }
       }
       return true;
     });
@@ -192,11 +200,11 @@
         currentWeek = item.week;
         grid.appendChild(createWeekLabel(item.week));
       }
-      grid.appendChild(buildCard(item));
+      grid.appendChild(buildCard(item, highlight));
     });
   }
 
-  function buildCard(item){
+  function buildCard(item, highlight){
     const accent = TOPIC_ACCENTS[item.topicId] || DEFAULT_ACCENT;
     const card = document.createElement('article');
     card.className = 'activity-card sequence-card';
@@ -219,7 +227,7 @@
 
     const title = document.createElement('span');
     title.className = 'activity-title';
-    title.innerHTML = highlightText(item.title, state.searchTerm);
+    title.innerHTML = highlight(item.title);
     toggle.appendChild(title);
 
     const meta = document.createElement('div');
@@ -254,7 +262,7 @@
 
     toggle.appendChild(meta);
 
-    const content = buildCardBody(item, bodyId, isExpanded);
+    const content = buildCardBody(item, bodyId, isExpanded, highlight);
 
     toggle.addEventListener('click', function(){
       const expanded = toggle.getAttribute('aria-expanded') === 'true';
@@ -312,7 +320,7 @@
     return card;
   }
 
-  function buildCardBody(item, bodyId, isExpanded){
+  function buildCardBody(item, bodyId, isExpanded, highlight){
     const body = document.createElement('div');
     body.className = 'activity-body sequence-body';
     body.id = bodyId;
@@ -321,7 +329,7 @@
     if(item.grouping){
       const grouping = document.createElement('p');
       grouping.className = 'grouping-label';
-      grouping.innerHTML = 'Grouping: ' + highlightText(item.grouping, state.searchTerm);
+      grouping.innerHTML = 'Grouping: ' + highlight(item.grouping);
       body.appendChild(grouping);
     }
 
@@ -332,7 +340,7 @@
         body.appendChild(liHeading);
 
         const liParagraph = document.createElement('p');
-        liParagraph.innerHTML = highlightText(item.visibleLearning.learningIntentions, state.searchTerm);
+        liParagraph.innerHTML = highlight(item.visibleLearning.learningIntentions);
         body.appendChild(liParagraph);
       }
 
@@ -344,7 +352,7 @@
         const scList = document.createElement('ul');
         item.visibleLearning.successCriteria.forEach(function(criteria){
           const li = document.createElement('li');
-          li.innerHTML = highlightText(criteria, state.searchTerm);
+          li.innerHTML = highlight(criteria);
           scList.appendChild(li);
         });
         body.appendChild(scList);
@@ -359,7 +367,7 @@
       const objectivesList = document.createElement('ul');
       item.objectives.forEach(function(obj){
         const li = document.createElement('li');
-        li.innerHTML = highlightText(obj, state.searchTerm);
+        li.innerHTML = highlight(obj);
         objectivesList.appendChild(li);
       });
       body.appendChild(objectivesList);
@@ -373,7 +381,7 @@
       const materialsList = document.createElement('ul');
       item.materials.forEach(function(material){
         const li = document.createElement('li');
-        li.innerHTML = highlightText(material, state.searchTerm);
+        li.innerHTML = highlight(material);
         materialsList.appendChild(li);
       });
       body.appendChild(materialsList);
@@ -387,7 +395,7 @@
       const stepsList = document.createElement('ol');
       item.steps.forEach(function(step){
         const li = document.createElement('li');
-        li.innerHTML = highlightText(step, state.searchTerm);
+        li.innerHTML = highlight(step);
         stepsList.appendChild(li);
       });
       body.appendChild(stepsList);
@@ -400,7 +408,7 @@
       assessment.appendChild(label);
       assessment.appendChild(document.createTextNode(' '));
       const description = document.createElement('span');
-      description.innerHTML = highlightText(item.assessment, state.searchTerm);
+      description.innerHTML = highlight(item.assessment);
       assessment.appendChild(description);
       body.appendChild(assessment);
     }
@@ -420,7 +428,7 @@
         anchor.href = link.url;
         anchor.target = '_blank';
         anchor.rel = 'noopener noreferrer';
-        anchor.innerHTML = highlightText(labelText, state.searchTerm) + '<span class="outbound-icon" aria-hidden="true">↗</span><span class="sr-only"> opens in a new tab</span>';
+        anchor.innerHTML = highlight(labelText) + '<span class="outbound-icon" aria-hidden="true">↗</span><span class="sr-only"> opens in a new tab</span>';
         list.appendChild(anchor);
       });
       linksWrap.appendChild(list);
@@ -437,7 +445,7 @@
       const tipsList = document.createElement('ul');
       item.teacherTips.forEach(function(tip){
         const li = document.createElement('li');
-        li.innerHTML = highlightText(tip, state.searchTerm);
+        li.innerHTML = highlight(tip);
         tipsList.appendChild(li);
       });
       tipsWrap.appendChild(tipsList);
@@ -750,31 +758,54 @@
     if(!resultsSummary){ return; }
     const value = typeof count === 'number' && !isNaN(count) ? count : 0;
     resultsSummary.hidden = false;
-    resultsSummary.textContent = value === 1 ? '1 result' : value + ' results';
+    const label = value === 1 ? '1 result' : value + ' results';
+    resultsSummary.textContent = 'Showing ' + label;
   }
 
-  function highlightText(text, term){
+  function highlightText(text, tokens){
     const safeText = text == null ? '' : String(text);
-    const searchTerm = term == null ? '' : String(term);
-    if(!searchTerm){
+    if(!Array.isArray(tokens) || !tokens.length){
       return escapeHTML(safeText);
     }
-    const lower = safeText.toLowerCase();
-    const searchLower = searchTerm.toLowerCase();
-    if(!searchLower){
-      return escapeHTML(safeText);
-    }
+    const pattern = new RegExp(tokens.map(escapeForRegex).join('|'), 'gi');
+    let lastIndex = 0;
     let result = '';
-    let index = 0;
-    let matchIndex = lower.indexOf(searchLower, index);
-    while(matchIndex !== -1){
-      result += escapeHTML(safeText.slice(index, matchIndex));
-      result += '<mark>' + escapeHTML(safeText.slice(matchIndex, matchIndex + searchLower.length)) + '</mark>';
-      index = matchIndex + searchLower.length;
-      matchIndex = lower.indexOf(searchLower, index);
-    }
-    result += escapeHTML(safeText.slice(index));
+    safeText.replace(pattern, function(match, offset){
+      result += escapeHTML(safeText.slice(lastIndex, offset));
+      result += '<mark>' + escapeHTML(match) + '</mark>';
+      lastIndex = offset + match.length;
+      return match;
+    });
+    result += escapeHTML(safeText.slice(lastIndex));
     return result;
+  }
+
+  function getSearchTokens(term){
+    if(!term){ return []; }
+    return String(term)
+      .trim()
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(Boolean);
+  }
+
+  function prepareHighlightTokens(tokens){
+    if(!Array.isArray(tokens) || !tokens.length){ return []; }
+    const seen = new Set();
+    const deduped = [];
+    tokens.forEach(function(token){
+      const normalized = String(token).toLowerCase();
+      if(normalized && !seen.has(normalized)){
+        seen.add(normalized);
+        deduped.push(normalized);
+      }
+    });
+    deduped.sort(function(a, b){ return b.length - a.length; });
+    return deduped;
+  }
+
+  function escapeForRegex(str){
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
   function escapeHTML(str){

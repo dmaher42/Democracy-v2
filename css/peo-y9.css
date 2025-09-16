@@ -232,6 +232,8 @@ a:hover {
 .controls .results-summary {
   font-size: 0.85rem;
   color: var(--muted);
+  margin-left: 0.25rem;
+  white-space: nowrap;
 }
 
 .controls input[type="search"],

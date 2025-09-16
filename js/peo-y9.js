@@ -185,6 +185,11 @@
     options = options || {};
     const preserveOpen = options.preserveOpen !== false;
     const openIds = preserveOpen ? getOpenActivityIds() : new Set();
+    const searchTokens = getSearchTokens(state.searchTerm);
+    const highlightTokens = prepareHighlightTokens(searchTokens);
+    const highlight = function(value){
+      return highlightText(value, highlightTokens);
+    };
 
     grid.innerHTML = '';
     if(!state.activities.length){
@@ -201,13 +206,16 @@
       if(state.favoritesOnly && !isFavorite(activity.id)){ return false; }
       if(state.topicFilter !== 'all' && entry.topic.id !== state.topicFilter){ return false; }
       if(state.typeFilter !== 'all' && !(Array.isArray(activity.type) && activity.type.includes(state.typeFilter))){ return false; }
-      if(state.searchTerm){
+      if(searchTokens.length){
         const haystack = [
           activity.title,
           (activity.objectives || []).join(' '),
           (activity.tags || []).join(' ')
         ].join(' ').toLowerCase();
-        if(!haystack.includes(state.searchTerm)){ return false; }
+        const matchesAll = searchTokens.every(function(token){
+          return haystack.indexOf(token) !== -1;
+        });
+        if(!matchesAll){ return false; }
       }
       return true;
     });
@@ -249,7 +257,7 @@
 
       const titleSpan = document.createElement('span');
       titleSpan.className = 'activity-title';
-      titleSpan.innerHTML = highlightText(activity.title, state.searchTerm);
+      titleSpan.innerHTML = highlight(activity.title);
       toggleBtn.appendChild(titleSpan);
 
       const meta = document.createElement('div');
@@ -316,7 +324,7 @@
       if(activity.grouping){
         const grouping = document.createElement('span');
         grouping.className = 'grouping-label';
-        grouping.innerHTML = 'Grouping: ' + highlightText(activity.grouping, state.searchTerm);
+        grouping.innerHTML = 'Grouping: ' + highlight(activity.grouping);
         actions.appendChild(grouping);
       }
 
@@ -349,7 +357,7 @@
         const list = document.createElement('ul');
         activity.objectives.forEach(function(item){
           const li = document.createElement('li');
-          li.innerHTML = highlightText(item, state.searchTerm);
+          li.innerHTML = highlight(item);
           list.appendChild(li);
         });
         objectivesWrap.appendChild(headingEl);
@@ -364,7 +372,7 @@
         const list = document.createElement('ul');
         activity.materials.forEach(function(item){
           const li = document.createElement('li');
-          li.innerHTML = highlightText(item, state.searchTerm);
+          li.innerHTML = highlight(item);
           list.appendChild(li);
         });
         materialsWrap.appendChild(headingEl);
@@ -379,7 +387,7 @@
         const list = document.createElement('ol');
         activity.steps.forEach(function(item){
           const li = document.createElement('li');
-          li.innerHTML = highlightText(item, state.searchTerm);
+          li.innerHTML = highlight(item);
           list.appendChild(li);
         });
         stepsWrap.appendChild(headingEl);
@@ -394,7 +402,7 @@
         assessment.appendChild(label);
         assessment.appendChild(document.createTextNode(' '));
         const description = document.createElement('span');
-        description.innerHTML = highlightText(activity.assessment, state.searchTerm);
+        description.innerHTML = highlight(activity.assessment);
         assessment.appendChild(description);
         body.appendChild(assessment);
       }
@@ -412,7 +420,7 @@
           anchor.href = link.url;
           anchor.target = '_blank';
           anchor.rel = 'noopener noreferrer';
-          anchor.innerHTML = highlightText(labelText, state.searchTerm) + '<span class="outbound-icon" aria-hidden="true">↗</span><span class="sr-only"> opens in a new tab</span>';
+          anchor.innerHTML = highlight(labelText) + '<span class="outbound-icon" aria-hidden="true">↗</span><span class="sr-only"> opens in a new tab</span>';
           list.appendChild(anchor);
         });
         linksWrap.appendChild(headingEl);
@@ -428,7 +436,7 @@
         const strong = document.createElement('strong');
         strong.textContent = 'Teacher tips';
         const text = document.createElement('p');
-        text.innerHTML = highlightText(tipText, state.searchTerm);
+        text.innerHTML = highlight(tipText);
         tip.appendChild(strong);
         tip.appendChild(text);
         body.appendChild(tip);
@@ -689,31 +697,54 @@
     if(!resultsSummary){ return; }
     const value = typeof count === 'number' && !isNaN(count) ? count : 0;
     resultsSummary.hidden = false;
-    resultsSummary.textContent = value === 1 ? '1 result' : value + ' results';
+    const label = value === 1 ? '1 result' : value + ' results';
+    resultsSummary.textContent = 'Showing ' + label;
   }
 
-  function highlightText(text, term){
+  function highlightText(text, tokens){
     const safeText = text == null ? '' : String(text);
-    const searchTerm = term == null ? '' : String(term);
-    if(!searchTerm){
+    if(!Array.isArray(tokens) || !tokens.length){
       return escapeHTML(safeText);
     }
-    const lower = safeText.toLowerCase();
-    const searchLower = searchTerm.toLowerCase();
-    if(!searchLower){
-      return escapeHTML(safeText);
-    }
+    const pattern = new RegExp(tokens.map(escapeForRegex).join('|'), 'gi');
+    let lastIndex = 0;
     let result = '';
-    let index = 0;
-    let matchIndex = lower.indexOf(searchLower, index);
-    while(matchIndex !== -1){
-      result += escapeHTML(safeText.slice(index, matchIndex));
-      result += '<mark>' + escapeHTML(safeText.slice(matchIndex, matchIndex + searchLower.length)) + '</mark>';
-      index = matchIndex + searchLower.length;
-      matchIndex = lower.indexOf(searchLower, index);
-    }
-    result += escapeHTML(safeText.slice(index));
+    safeText.replace(pattern, function(match, offset){
+      result += escapeHTML(safeText.slice(lastIndex, offset));
+      result += '<mark>' + escapeHTML(match) + '</mark>';
+      lastIndex = offset + match.length;
+      return match;
+    });
+    result += escapeHTML(safeText.slice(lastIndex));
     return result;
+  }
+
+  function getSearchTokens(term){
+    if(!term){ return []; }
+    return String(term)
+      .trim()
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(Boolean);
+  }
+
+  function prepareHighlightTokens(tokens){
+    if(!Array.isArray(tokens) || !tokens.length){ return []; }
+    const seen = new Set();
+    const deduped = [];
+    tokens.forEach(function(token){
+      const normalized = String(token).toLowerCase();
+      if(normalized && !seen.has(normalized)){
+        seen.add(normalized);
+        deduped.push(normalized);
+      }
+    });
+    deduped.sort(function(a, b){ return b.length - a.length; });
+    return deduped;
+  }
+
+  function escapeForRegex(str){
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
   function escapeHTML(str){
