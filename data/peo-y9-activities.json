@@ -1,0 +1,182 @@
+{
+  "topics": [
+    {
+      "id": "media-literacy",
+      "title": "Media Literacy",
+      "color": "#2463EB",
+      "activities": [
+        {
+          "id": "news-diet-challenge",
+          "title": "News Diet Challenge",
+          "type": ["discussion", "inquiry"],
+          "duration": "30–45 min",
+          "grouping": "Pairs → Whole class",
+          "objectives": [
+            "Differentiate facts, opinions and bias in news sources",
+            "Reflect on personal news consumption habits"
+          ],
+          "materials": [
+            "Student devices or printed articles",
+            "Reflection sheet (PDF/Doc link)"
+          ],
+          "steps": [
+            "Students list sources they used in the past 48 hours.",
+            "Classify each item: fact / opinion / mixed; identify any bias.",
+            "Pairs swap lists and critique balance (domestic/world, sources, formats).",
+            "Whole-class share: what changed in their ‘news diet’ thinking?"
+          ],
+          "assessment": "Exit ticket: one change they’ll make to improve balance and reliability.",
+          "links": [
+            {"label": "PEO – Year 9 Units (Media)", "url": "https://peo.gov.au/teach-our-parliament/units-of-work/year-9"}
+          ],
+          "tags": ["media", "bias", "source-analysis", "critical-thinking"]
+        }
+      ]
+    },
+    {
+      "id": "political-parties",
+      "title": "Political Parties",
+      "color": "#16A34A",
+      "activities": [
+        {
+          "id": "frayer-model",
+          "title": "Frayer Model: Party Ideology",
+          "type": ["graphic-organiser", "research"],
+          "duration": "40–60 min",
+          "grouping": "Small groups",
+          "objectives": [
+            "Define and exemplify key party ideology terms",
+            "Compare similarities and differences across parties"
+          ],
+          "materials": ["Frayer template", "Party websites / fact sheets"],
+          "steps": [
+            "Assign each group a party/ideology term.",
+            "Complete Frayer (definition, characteristics, examples, non-examples).",
+            "Gallery walk; add ‘two stars and a wish’ feedback to each poster."
+          ],
+          "assessment": "Collect Frayers; assess clarity/accuracy and use of evidence.",
+          "links": [
+            {"label": "PEO – Parties & Government", "url": "https://peo.gov.au/teach-our-parliament/units-of-work/year-9"}
+          ],
+          "tags": ["parties", "ideology", "compare-contrast"]
+        }
+      ]
+    },
+    {
+      "id": "parliament-law-making",
+      "title": "Parliament & Law-Making",
+      "color": "#DC2626",
+      "activities": [
+        {
+          "id": "bill-simulation",
+          "title": "How a Bill Becomes Law – Simulation",
+          "type": ["simulation", "role-play"],
+          "duration": "60–90 min",
+          "grouping": "Whole class roles",
+          "objectives": [
+            "Explain the stages of a bill in the federal Parliament",
+            "Experience debate, committee and voting processes"
+          ],
+          "materials": ["Role cards", "Bill summary handout", "Chamber layout"],
+          "steps": [
+            "Assign roles (Speaker/President, Government/Opposition, Crossbench, Clerks, Whips, Media).",
+            "First/second reading, debate, possible amendments.",
+            "Optional committee stage; third reading; Senate repeat; Royal Assent.",
+            "Debrief: link steps to real-world examples."
+          ],
+          "assessment": "Quick-write: which stage most influences outcomes and why?",
+          "links": [
+            {"label": "PEO – Making Laws", "url": "https://peo.gov.au/teach-our-parliament/units-of-work/year-9"}
+          ],
+          "tags": ["parliament", "bills", "procedure", "debate"]
+        }
+      ]
+    },
+    {
+      "id": "courts-justice",
+      "title": "Courts & Justice",
+      "color": "#7C3AED",
+      "activities": [
+        {
+          "id": "mock-hearing",
+          "title": "Courtroom Role-Play: How Courts Support Democracy",
+          "type": ["role-play", "case-study"],
+          "duration": "45–70 min",
+          "grouping": "Small groups → plenary",
+          "objectives": [
+            "Identify roles and processes in Australian courts",
+            "Explain rule of law and judicial independence"
+          ],
+          "materials": ["Case summary", "Role cards", "Verdict sheet"],
+          "steps": [
+            "Groups stage a short hearing with set roles.",
+            "Observers use a checklist (fairness, due process, evidence usage).",
+            "Compare outcomes across groups; discuss consistency and appeals."
+          ],
+          "assessment": "Checklist + reflection paragraph on fairness and due process.",
+          "links": [
+            {"label": "PEO – Courts & Justice", "url": "https://peo.gov.au/teach-our-parliament/units-of-work/year-9"}
+          ],
+          "tags": ["courts", "rule-of-law", "judicial-independence"]
+        }
+      ]
+    },
+    {
+      "id": "citizen-participation",
+      "title": "Citizen Participation",
+      "color": "#0EA5E9",
+      "activities": [
+        {
+          "id": "petition-plan",
+          "title": "Petition & Lobby Plan",
+          "type": ["civics-action", "planning"],
+          "duration": "50–70 min",
+          "grouping": "Teams",
+          "objectives": [
+            "Map an issue, stakeholders, and a lawful action pathway",
+            "Draft a persuasive petition and outreach plan"
+          ],
+          "materials": ["Stakeholder map template", "Petition template"],
+          "steps": [
+            "Choose a local issue; map stakeholders and decision-makers.",
+            "Draft petition text (clear ask, reasons, evidence).",
+            "Plan lawful outreach (meetings, letters, social media etiquette)."
+          ],
+          "assessment": "Submit a 1-page plan with SMART next steps.",
+          "links": [
+            {"label": "PEO – Participation", "url": "https://peo.gov.au/teach-our-parliament/units-of-work/year-9"}
+          ],
+          "tags": ["participation", "advocacy", "petitions"]
+        }
+      ]
+    },
+    {
+      "id": "assessment",
+      "title": "Assessment Options",
+      "color": "#F97316",
+      "activities": [
+        {
+          "id": "civics-inquiry-project",
+          "title": "Civics Inquiry: Local Issue Case Study",
+          "type": ["product", "presentation"],
+          "duration": "Multi-lesson",
+          "grouping": "Individual or pairs",
+          "objectives": [
+            "Investigate a civics issue and present evidence-based recommendations"
+          ],
+          "materials": ["Inquiry guide", "Rubric", "Presentation template"],
+          "steps": [
+            "Define a guiding question aligned to curriculum content.",
+            "Collect and evaluate sources (reliability, bias).",
+            "Present findings via report, video, podcast, or infographic."
+          ],
+          "assessment": "Rubric aligned to ACARA Year 9 Civics & Citizenship.",
+          "links": [
+            {"label": "PEO – Assessments", "url": "https://peo.gov.au/teach-our-parliament/units-of-work/year-9"}
+          ],
+          "tags": ["assessment", "inquiry", "communication"]
+        }
+      ]
+    }
+  ]
+}
