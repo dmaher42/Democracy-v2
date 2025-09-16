@@ -42,9 +42,41 @@
           Load SA “Equal Before the Law?”
         </button>
         <button id="toggleSequenceBtn" class="btn btn-secondary focus-ring">4-Week SA Curriculum</button>
-        <button id="toggleViewBtn" class="btn btn-secondary focus-ring" aria-pressed="false">
-          Switch to Dispositions
-        </button>
+        <div
+          class="inline-flex flex-wrap gap-1 rounded-2xl border border-slate-300 bg-slate-100 p-1"
+          id="viewToggle"
+          role="tablist"
+          aria-label="View toggle"
+          aria-orientation="horizontal"
+          data-view-tablist
+        >
+          <button
+            type="button"
+            id="viewTab-8week"
+            class="px-3 py-1.5 text-sm font-semibold rounded-xl tab shadow focus-ring"
+            role="tab"
+            aria-selected="true"
+            aria-controls="weekView"
+            tabindex="0"
+            data-view-tab="8week"
+            data-view-target="weekView"
+          >
+            8-Week
+          </button>
+          <button
+            type="button"
+            id="viewTab-dispositions"
+            class="px-3 py-1.5 text-sm rounded-xl tab focus-ring"
+            role="tab"
+            aria-selected="false"
+            aria-controls="dispView"
+            tabindex="-1"
+            data-view-tab="dispositions"
+            data-view-target="dispView"
+          >
+            Dispositions
+          </button>
+        </div>
         <button id="bulkResBtn"
           class="btn btn-secondary focus-ring"
           title="Bulk update Resources">
@@ -90,7 +122,14 @@
   </script>
 
   <main id="main" role="main" class="max-w-6xl mx-auto p-4">
-    <section id="weekView" class="space-y-6">
+    <section
+      id="weekView"
+      class="space-y-6"
+      role="tabpanel"
+      aria-labelledby="viewTab-8week"
+      data-view-panel="8week"
+      tabindex="0"
+    >
       <!-- Unit Details Card -->
       <section class="bg-white/80 backdrop-blur rounded-2xl shadow p-5 border border-slate-200">
         <div class="flex items-start justify-between gap-4">
@@ -193,7 +232,16 @@
       </div>
     </section>
 
-    <section id="dispView" class="space-y-6" hidden aria-hidden="true">
+    <section
+      id="dispView"
+      class="space-y-6"
+      role="tabpanel"
+      aria-labelledby="viewTab-dispositions"
+      data-view-panel="dispositions"
+      hidden
+      aria-hidden="true"
+      tabindex="-1"
+    >
       <section class="bg-white/80 backdrop-blur rounded-2xl shadow p-5 border border-slate-200">
         <div class="flex items-start justify-between gap-4">
           <div>
