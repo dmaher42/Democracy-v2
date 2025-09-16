@@ -637,4 +637,7 @@ body.peo-printing .peo-print-activity h2 {
   body.peo-printing .peo-print-area {
     display: block !important;
   }
+  [data-peo-tab-panel][hidden] {
+    display: block !important;
+  }
 }
