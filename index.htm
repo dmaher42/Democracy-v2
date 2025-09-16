@@ -9,8 +9,6 @@
   <script defer src="js/peo-y9.js"></script>
   <script defer src="js/peo-y9-sequenced.js"></script>
   <style>
-    :root{ --ring: 219 14% 28%; }
-    .focus-ring:focus{ outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
     @media print {
       header, nav.no-print, .no-print{ display:none !important }
       main{ padding:0 !important }
@@ -22,27 +20,27 @@
 <body class="min-h-screen bg-gradient-to-b from-slate-100 to-slate-200 text-slate-900">
   <a class="skip-link" href="#mainContent">Skip to content</a>
   <!-- Top Bar -->
-  <header class="sticky top-0 z-10 border-b border-slate-200 backdrop-blur bg-white/70">
+  <header class="site-header sticky top-0 z-10 border-b border-slate-200 backdrop-blur bg-white/70">
     <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap items-center gap-4 justify-between">
       <div>
         <h1 id="title" class="text-2xl font-bold tracking-tight">Year 9 Civics & Citizenship – Healthy Democracy</h1>
-        <p id="subtitle" class="text-sm text-slate-600">How might a deeper understanding of living in a healthy democracy restore trust and foster civically minded students?</p>
+        <p id="subtitle" class="lead text-sm text-slate-600">How might a deeper understanding of living in a healthy democracy restore trust and foster civically minded students?</p>
       </div>
       <div class="flex items-center gap-2 no-print">
-        <button id="printBtn" class="rounded-xl px-3 py-2 bg-white border border-slate-300 focus-ring" title="Print">Print</button>
-        <button id="exportBtn" class="rounded-xl px-3 py-2 bg-white border border-slate-300 focus-ring" title="Export JSON">Export JSON</button>
-        <label class="rounded-xl px-3 py-2 bg-white border border-slate-300 focus-ring cursor-pointer" title="Import JSON">
+        <button id="printBtn" class="btn btn-outline focus-ring" title="Print">Print</button>
+        <button id="exportBtn" class="btn btn-outline focus-ring" title="Export JSON">Export JSON</button>
+        <label class="btn btn-outline focus-ring cursor-pointer" title="Import JSON">
           Import JSON
           <input id="importInput" type="file" accept="application/json" class="hidden" />
         </label>
-        <button id="loadSaPresetBtn" class="rounded-xl px-3 py-2 bg-white border border-amber-400 text-amber-700 focus-ring" title="Load SA Equal Before the Law?">
+        <button id="loadSaPresetBtn" class="btn btn-primary focus-ring" title="Load SA Equal Before the Law?">
           Load SA “Equal Before the Law?”
         </button>
-        <button id="toggleViewBtn" class="rounded-xl px-3 py-2 bg-white border border-amber-400 text-amber-700 focus-ring" aria-pressed="false">
+        <button id="toggleViewBtn" class="btn btn-primary focus-ring" aria-pressed="false">
           Switch to Dispositions
         </button>
         <button id="bulkResBtn"
-          class="rounded-xl px-3 py-2 bg-white border border-sky-400 text-sky-700 focus-ring"
+          class="btn btn-secondary focus-ring"
           title="Bulk update Resources">
           Update Resources
         </button>
@@ -70,10 +68,10 @@
           <h2 class="text-xl font-semibold tracking-tight">Unit Details</h2>
           <div class="flex items-center gap-3 no-print">
             <div class="inline-flex rounded-2xl border border-slate-300 bg-slate-100 p-1" id="curriculumToggle" role="tablist" aria-label="Curriculum toggle">
-              <button data-mode="SA" class="px-3 py-1.5 text-sm rounded-xl bg-white shadow font-semibold" role="tab" aria-selected="true">SA</button>
-              <button data-mode="ACARA" class="px-3 py-1.5 text-sm rounded-xl text-slate-600" role="tab" aria-selected="false">ACARA</button>
+              <button data-mode="SA" class="px-3 py-1.5 text-sm rounded-xl tab font-semibold shadow" role="tab" aria-selected="true">SA</button>
+              <button data-mode="ACARA" class="px-3 py-1.5 text-sm rounded-xl tab" role="tab" aria-selected="false">ACARA</button>
             </div>
-            <button id="quickEdit" class="rounded-xl px-3 py-1.5 bg-slate-900 text-white focus-ring" title="Quick edit">Quick Edit</button>
+            <button id="quickEdit" class="btn btn-secondary focus-ring" title="Quick edit">Quick Edit</button>
           </div>
         </div>
         <div class="mt-3 grid md:grid-cols-2 gap-6" id="unitMeta" aria-live="polite"></div>
@@ -97,7 +95,7 @@
             <button
               type="button"
               id="peoTab-activities"
-              class="px-4 py-2 text-sm font-semibold rounded-xl border bg-slate-900 text-white border-slate-900 shadow transition-colors focus-ring"
+              class="px-4 py-2 text-sm font-semibold rounded-xl border tab shadow transition-colors focus-ring"
               role="tab"
               aria-selected="true"
               aria-controls="peo-y9"
@@ -108,7 +106,7 @@
             <button
               type="button"
               id="peoTab-sequenced"
-              class="px-4 py-2 text-sm font-semibold rounded-xl border bg-white text-slate-700 border-slate-300 transition-colors focus-ring"
+              class="px-4 py-2 text-sm font-semibold rounded-xl border tab transition-colors focus-ring"
               role="tab"
               aria-selected="false"
               aria-controls="peo-y9-sequenced"
@@ -212,7 +210,7 @@ function notify(msg){
   if(!box){ box = document.createElement('div'); box.id='toasts'; box.className='fixed bottom-4 right-4 z-50 space-y-2'; document.body.appendChild(box); }
   var n = document.createElement('div');
   n.setAttribute('role','status');
-  n.className='rounded-xl bg-slate-900 text-white px-3 py-2 shadow';
+  n.className='rounded-xl bg-green px-3 py-2 shadow';
   n.textContent = msg;
   box.appendChild(n);
   setTimeout(function(){ if(n && n.parentNode) n.parentNode.removeChild(n); }, 3000);
@@ -237,8 +235,6 @@ function setupPeoActivitiesTabs(){
   if(!panels.length){ return; }
 
   var storageKey = 'peoY9.sectionTab';
-  var activeClasses = ['bg-slate-900','text-white','border-slate-900','shadow'];
-  var inactiveClasses = ['bg-white','text-slate-700','border-slate-300'];
   var tabNames = new Set(buttons.map(function(btn){ return btn.dataset.peoTab; }).filter(Boolean));
   if(tabNames.size === 0){ return; }
 
@@ -257,8 +253,8 @@ function setupPeoActivitiesTabs(){
   function applyButtonState(btn, isActive){
     btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
     btn.setAttribute('tabindex', isActive ? '0' : '-1');
-    activeClasses.forEach(function(cls){ btn.classList.toggle(cls, isActive); });
-    inactiveClasses.forEach(function(cls){ btn.classList.toggle(cls, !isActive); });
+    btn.classList.add('tab');
+    btn.classList.toggle('shadow', isActive);
   }
 
   function applyPanelState(panel, isActive){
@@ -753,15 +749,10 @@ function render(){
 
   // Curriculum toggle styling
   $$('#curriculumToggle button').forEach(function(btn){
-    if(btn.dataset.mode===plan.curriculumView){
-      btn.classList.add('bg-white','shadow','font-semibold');
-      btn.classList.remove('text-slate-600');
-      btn.setAttribute('aria-selected','true');
-    } else {
-      btn.classList.remove('bg-white','shadow','font-semibold');
-      btn.classList.add('text-slate-600');
-      btn.setAttribute('aria-selected','false');
-    }
+    var isActive = btn.dataset.mode === plan.curriculumView;
+    btn.classList.toggle('shadow', isActive);
+    btn.classList.toggle('font-semibold', isActive);
+    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
   });
 
   // Tabs
@@ -771,7 +762,8 @@ function render(){
   tabs.forEach(function(t){
     var b=document.createElement('button');
     b.textContent=t; b.dataset.tab=t; b.setAttribute('role','tab');
-    b.className = 'px-4 py-2 rounded-xl border bg-white border-slate-300 focus-ring';
+    b.className = 'px-4 py-2 text-sm font-semibold rounded-xl border tab focus-ring';
+    b.setAttribute('aria-selected','false');
     tabsEl.appendChild(b);
   });
   var lastTab = ssGet('yr9-tab', 'Overview');
@@ -806,12 +798,10 @@ function selectTab(tab){
   ssSet('yr9-tab', tab);
   $$('#tabs button').forEach(function(b){
     if(b.dataset.tab===tab){
-      b.classList.remove('bg-white','border-slate-300');
-      b.classList.add('bg-slate-900','text-white','border-slate-900');
+      b.classList.add('shadow');
       b.setAttribute('aria-selected','true');
     } else {
-      b.classList.add('bg-white','border-slate-300');
-      b.classList.remove('bg-slate-900','text-white','border-slate-900');
+      b.classList.remove('shadow');
       b.setAttribute('aria-selected','false');
     }
   });
@@ -974,7 +964,7 @@ function card(title, inner){
 function listEditor(items, key, placeholder){
   var list = (items || []).map(function(t,i){ return '<li class="group flex items-start gap-2"><span class="flex-1">'+escapeHtml(t)+'</span><button data-del="'+i+'" class="opacity-0 group-hover:opacity-100 text-xs text-red-600">remove</button></li>'; }).join('');
   return '<ul class="list-disc pl-5 space-y-1" data-edit-key="'+key+'">'+ list +'</ul>\
-  <div class="mt-3 flex gap-2"><input class="flex-1 rounded-xl border border-slate-300 px-3 py-2" placeholder="'+escapeHtml(placeholder)+'" /><button class="rounded-xl px-3 py-2 bg-slate-900 text-white" data-add="1">Add</button></div>';
+  <div class="mt-3 flex gap-2"><input class="flex-1 rounded-xl border border-slate-300 px-3 py-2" placeholder="'+escapeHtml(placeholder)+'" /><button class="btn btn-secondary" data-add="1">Add</button></div>';
 }
 
 function bindListEditors(root){
@@ -1028,9 +1018,9 @@ function openResourcesEditor(){
     + '  </div>'
     + '  <div class="p-4 border-t border-slate-200 flex items-center justify-end gap-2">'
     + '    <button type="button" data-cancel'
-    + '      class="rounded-xl px-3 py-2 border border-slate-300 bg-white">Cancel</button>'
+    + '      class="btn btn-outline focus-ring">Cancel</button>'
     + '    <button type="button" data-save'
-    + '      class="rounded-xl px-3 py-2 bg-slate-900 text-white">Save</button>'
+    + '      class="btn btn-secondary focus-ring">Save</button>'
     + '  </div>'
     + '</div>';
 
