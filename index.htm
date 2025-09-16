@@ -51,9 +51,6 @@
             </details>
           </div>
         </details>
-        <button id="loadSaPresetBtn" class="btn btn-primary focus-ring" title=">Equal Before the Law?">
-          Load SA “Equal Before the Law?”
-        </button>
         <button id="toggleSequenceBtn" class="btn btn-secondary focus-ring">4-Week SA Curriculum</button>
         <div
           class="inline-flex flex-wrap gap-1 rounded-2xl border border-slate-300 bg-slate-100 p-1"
@@ -1271,22 +1268,6 @@ if(toggleSequenceBtn){
     renderSequence();
   });
 }
-$('#loadSaPresetBtn').addEventListener('click', function(){
-  var ok = safeConfirm('Replace the current plan with the SA "Equal Before the Law?" preset?');
-  if(!ok) return;
-  try {
-    plan = preparePlan(deepClone(SA_EQUAL_BEFORE_LAW_PRESET));
-    plan.currentSequence = 'sa';
-    ssSet('yr9-tab','Overview');
-    saveState();
-    render();
-    notify('Loaded SA preset: Equal Before the Law?');
-  } catch(err){
-    console.error('Failed to load SA preset', err);
-    notify('Sorry — failed to load the SA preset. See console for details.');
-  }
-});
-
 // --- Self-tests (basic runtime checks) ---
 function runSelfTests(){
   var tests = [];
