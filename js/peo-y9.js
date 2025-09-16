@@ -10,6 +10,7 @@
   const printBtn = section.querySelector('#printSelected');
   const favoritesBtn = section.querySelector('#filterFavorites');
   const grid = section.querySelector('#activitiesGrid');
+  const resultsSummary = createResultsSummary(searchInput);
 
   const STORAGE_KEYS = {
     teacherMode: 'peoY9.teacherMode',
@@ -186,6 +187,7 @@
 
     grid.innerHTML = '';
     if(!state.activities.length){
+      updateResultsSummary(resultsSummary, 0);
       const empty = document.createElement('div');
       empty.className = 'empty-state';
       empty.textContent = 'No activities available.';
@@ -208,6 +210,8 @@
       }
       return true;
     });
+
+    updateResultsSummary(resultsSummary, filtered.length);
 
     if(!filtered.length){
       const empty = document.createElement('div');
@@ -244,7 +248,7 @@
 
       const titleSpan = document.createElement('span');
       titleSpan.className = 'activity-title';
-      titleSpan.textContent = activity.title;
+      setHighlightedText(titleSpan, activity.title);
       toggleBtn.appendChild(titleSpan);
 
       const meta = document.createElement('div');
@@ -269,7 +273,7 @@
       topicChip.style.backgroundColor = topic.color || '#0f172a';
       const topicLabel = document.createElement('span');
       topicLabel.className = 'topic-label';
-      topicLabel.textContent = topic.title;
+      setHighlightedText(topicLabel, topic.title);
       topicChip.appendChild(topicLabel);
       meta.appendChild(topicChip);
 
@@ -284,7 +288,7 @@
         activity.type.forEach(function(type){
           const typeChip = document.createElement('span');
           typeChip.className = 'type-chip';
-          typeChip.textContent = type;
+          setHighlightedText(typeChip, type);
           meta.appendChild(typeChip);
         });
       }
@@ -311,7 +315,10 @@
       if(activity.grouping){
         const grouping = document.createElement('span');
         grouping.className = 'grouping-label';
-        grouping.textContent = 'Grouping: ' + activity.grouping;
+        grouping.appendChild(document.createTextNode('Grouping: '));
+        const groupingValue = document.createElement('span');
+        setHighlightedText(groupingValue, activity.grouping);
+        grouping.appendChild(groupingValue);
         actions.appendChild(grouping);
       }
 
@@ -344,7 +351,7 @@
         const list = document.createElement('ul');
         activity.objectives.forEach(function(item){
           const li = document.createElement('li');
-          li.textContent = item;
+          setHighlightedText(li, item);
           list.appendChild(li);
         });
         objectivesWrap.appendChild(headingEl);
@@ -359,7 +366,7 @@
         const list = document.createElement('ul');
         activity.materials.forEach(function(item){
           const li = document.createElement('li');
-          li.textContent = item;
+          setHighlightedText(li, item);
           list.appendChild(li);
         });
         materialsWrap.appendChild(headingEl);
@@ -374,7 +381,7 @@
         const list = document.createElement('ol');
         activity.steps.forEach(function(item){
           const li = document.createElement('li');
-          li.textContent = item;
+          setHighlightedText(li, item);
           list.appendChild(li);
         });
         stepsWrap.appendChild(headingEl);
@@ -387,7 +394,10 @@
         const label = document.createElement('strong');
         label.textContent = 'Assessment:';
         assessment.appendChild(label);
-        assessment.appendChild(document.createTextNode(' ' + activity.assessment));
+        assessment.appendChild(document.createTextNode(' '));
+        const assessmentText = document.createElement('span');
+        setHighlightedText(assessmentText, activity.assessment);
+        assessment.appendChild(assessmentText);
         body.appendChild(assessment);
       }
 
@@ -404,7 +414,16 @@
           anchor.href = link.url;
           anchor.target = '_blank';
           anchor.rel = 'noopener noreferrer';
-          anchor.innerHTML = labelText + '<span class="outbound-icon" aria-hidden="true">↗</span><span class="sr-only"> opens in a new tab</span>';
+          setHighlightedText(anchor, labelText);
+          const icon = document.createElement('span');
+          icon.className = 'outbound-icon';
+          icon.setAttribute('aria-hidden', 'true');
+          icon.textContent = '↗';
+          const srOnly = document.createElement('span');
+          srOnly.className = 'sr-only';
+          srOnly.textContent = ' opens in a new tab';
+          anchor.appendChild(icon);
+          anchor.appendChild(srOnly);
           list.appendChild(anchor);
         });
         linksWrap.appendChild(headingEl);
@@ -420,7 +439,7 @@
         const strong = document.createElement('strong');
         strong.textContent = 'Teacher tips';
         const text = document.createElement('p');
-        text.textContent = tipText;
+        setHighlightedText(text, tipText);
         tip.appendChild(strong);
         tip.appendChild(text);
         body.appendChild(tip);
@@ -623,6 +642,60 @@
     return state.favorites.includes(activityId);
   }
 
+  function createResultsSummary(input){
+    if(!input || !input.parentNode){ return null; }
+    const summary = document.createElement('span');
+    summary.className = 'search-results-count';
+    summary.setAttribute('role', 'status');
+    summary.setAttribute('aria-live', 'polite');
+    summary.textContent = '';
+    input.insertAdjacentElement('afterend', summary);
+    return summary;
+  }
+
+  function updateResultsSummary(summaryEl, count){
+    if(!summaryEl){ return; }
+    const value = typeof count === 'number' && !isNaN(count) ? count : 0;
+    summaryEl.textContent = value === 1 ? '1 result' : value + ' results';
+  }
+
+  function setHighlightedText(element, text){
+    if(!element){ return; }
+    const value = text == null ? '' : String(text);
+    element.textContent = '';
+    if(!value){
+      return;
+    }
+    if(!state.searchTerm){
+      element.textContent = value;
+      return;
+    }
+
+    const term = state.searchTerm;
+    const termPattern = escapeRegExp(term);
+    if(!termPattern){
+      element.textContent = value;
+      return;
+    }
+
+    const regex = new RegExp('(' + termPattern + ')', 'ig');
+    const parts = value.split(regex);
+    const termLower = term.toLowerCase();
+    parts.forEach(function(part){
+      if(!part){ return; }
+      if(part.toLowerCase() === termLower){
+        const mark = document.createElement('mark');
+        mark.textContent = part;
+        element.appendChild(mark);
+      } else {
+        element.appendChild(document.createTextNode(part));
+      }
+    });
+  }
+
+  function escapeRegExp(str){
+    return str.replace(/[.*+?^${}()|[\]\]/g, '\$&');
+  }
   function debounce(fn, wait){
     let timeout;
     return function(){
