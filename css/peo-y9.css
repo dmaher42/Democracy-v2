@@ -43,6 +43,51 @@
   margin-bottom: 1.5rem;
 }
 
+.section-tabs {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.section-tabs__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.section-tabs__tab {
+  border-radius: 0.75rem;
+  border: 1px solid #cbd5f5;
+  background-color: #ffffff;
+  padding: 0.55rem 1.15rem;
+  font-weight: 600;
+  color: #0f172a;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.section-tabs__tab:hover,
+.section-tabs__tab:focus-visible {
+  background-color: #e0f2fe;
+}
+
+.section-tabs__tab:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.4);
+  outline-offset: 2px;
+}
+
+.section-tabs__tab[aria-selected="true"] {
+  background-color: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+  box-shadow: 0 18px 38px -28px rgba(15, 23, 42, 0.6);
+}
+
+.section-tabs__panel.is-hidden {
+  display: none;
+}
+
 .controls {
   display: flex;
   flex-wrap: wrap;
@@ -634,6 +679,14 @@ body.peo-printing .peo-print-activity h2 {
 }
 
 @media print {
+  .section-tabs__list {
+    display: none !important;
+  }
+
+  .section-tabs__panel.is-hidden {
+    display: block;
+  }
+
   body.peo-printing .peo-print-area {
     display: block !important;
   }

@@ -81,38 +81,72 @@
     <!-- Tab Panels -->
     <div id="panel" aria-live="polite"></div>
 
-    <section id="peo-y9" class="section">
-      <h2 tabindex="-1">PEO Year 9 Activities</h2>
+    <div class="section-tabs">
+      <nav
+        id="activityTabs"
+        class="section-tabs__list no-print"
+        role="tablist"
+        aria-label="PEO activity sections"
+      >
+        <button
+          type="button"
+          id="tab-peo-y9"
+          class="section-tabs__tab"
+          role="tab"
+          aria-selected="true"
+          aria-controls="peo-y9"
+          data-target="peo-y9"
+          tabindex="0"
+        >
+          PEO Year 9 Activities
+        </button>
+        <button
+          type="button"
+          id="tab-peo-y9-sequenced"
+          class="section-tabs__tab"
+          role="tab"
+          aria-selected="false"
+          aria-controls="peo-y9-sequenced"
+          data-target="peo-y9-sequenced"
+          tabindex="-1"
+        >
+          PEO Year 9 – Sequenced Activities
+        </button>
+      </nav>
 
-      <!-- Controls -->
-      <div class="controls">
-        <input id="searchActivities" type="search" placeholder="Search activities, tags, objectives…" aria-label="Search activities" />
-        <select id="filterTopic" aria-label="Filter by topic"></select>
-        <select id="filterType" aria-label="Filter by type"></select>
-        <button id="filterFavorites" aria-pressed="false">Favorites</button>
-        <button id="toggleTeacherMode" aria-pressed="false">Teacher Mode: Off</button>
-        <button id="printSelected">Print/Export Selected</button>
-      </div>
+      <section id="peo-y9" class="section section-tabs__panel" role="tabpanel" aria-labelledby="tab-peo-y9">
+        <h2 tabindex="-1">PEO Year 9 Activities</h2>
 
-      <!-- Rendered cards go here -->
-      <div id="activitiesGrid" class="grid"></div>
-    </section>
+        <!-- Controls -->
+        <div class="controls">
+          <input id="searchActivities" type="search" placeholder="Search activities, tags, objectives…" aria-label="Search activities" />
+          <select id="filterTopic" aria-label="Filter by topic"></select>
+          <select id="filterType" aria-label="Filter by type"></select>
+          <button id="filterFavorites" aria-pressed="false">Favorites</button>
+          <button id="toggleTeacherMode" aria-pressed="false">Teacher Mode: Off</button>
+          <button id="printSelected">Print/Export Selected</button>
+        </div>
 
-    <section id="peo-y9-sequenced" class="section">
-      <h2 tabindex="-1">PEO Year 9 – Sequenced Activities</h2>
+        <!-- Rendered cards go here -->
+        <div id="activitiesGrid" class="grid"></div>
+      </section>
 
-      <div class="controls">
-        <label class="sr-only" for="sequenceWeek">Jump to week</label>
-        <select id="sequenceWeek"></select>
+      <section id="peo-y9-sequenced" class="section section-tabs__panel" role="tabpanel" aria-labelledby="tab-peo-y9-sequenced">
+        <h2 tabindex="-1">PEO Year 9 – Sequenced Activities</h2>
 
-        <input id="searchSeq" type="search" placeholder="Search activities, aims, tags…" aria-label="Search activities" />
-        <button id="toggleTeacherMode2" aria-pressed="false">Teacher Mode: Off</button>
-        <button id="showFavorites2" aria-pressed="false">Show Favourites</button>
-        <button id="printSelected2">Print/Export Selected</button>
-      </div>
+        <div class="controls">
+          <label class="sr-only" for="sequenceWeek">Jump to week</label>
+          <select id="sequenceWeek"></select>
 
-      <div id="seqGrid" class="grid"></div>
-    </section>
+          <input id="searchSeq" type="search" placeholder="Search activities, aims, tags…" aria-label="Search activities" />
+          <button id="toggleTeacherMode2" aria-pressed="false">Teacher Mode: Off</button>
+          <button id="showFavorites2" aria-pressed="false">Show Favourites</button>
+          <button id="printSelected2">Print/Export Selected</button>
+        </div>
+
+        <div id="seqGrid" class="grid"></div>
+      </section>
+    </div>
   </main>
 
   <footer class="max-w-6xl mx-auto px-4 py-8 text-xs text-slate-500">
@@ -567,6 +601,134 @@ function selectTab(tab){
   if(tab==='Resources') renderResources(panel);
 }
 
+function initActivityTabs(){
+  var tabList = document.getElementById('activityTabs');
+  if(!tabList){ return; }
+
+  var buttons = Array.prototype.slice.call(tabList.querySelectorAll('[data-target]'));
+  if(!buttons.length){ return; }
+
+  var panels = {};
+  var validButtons = [];
+  buttons.forEach(function(btn){
+    var target = btn.dataset.target;
+    if(!target){ return; }
+    var panel = document.getElementById(target);
+    if(!panel){ return; }
+    if(!btn.id){ btn.id = 'activity-tab-' + target; }
+    panel.setAttribute('aria-labelledby', btn.id);
+    panels[target] = panel;
+    validButtons.push(btn);
+  });
+
+  buttons = validButtons;
+  if(!buttons.length){ return; }
+
+  var activeId = null;
+  var reduceMotion = false;
+  try {
+    reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  } catch(err){}
+
+  var STORAGE_KEY = 'peo-y9.activityTab';
+
+  function activate(id, options){
+    options = options || {};
+    if(!panels[id]){ return; }
+    if(activeId === id && !options.force){ return; }
+    activeId = id;
+
+    buttons.forEach(function(btn){
+      var isActive = btn.dataset.target === id;
+      btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      btn.setAttribute('tabindex', isActive ? '0' : '-1');
+    });
+
+    Object.keys(panels).forEach(function(key){
+      var panel = panels[key];
+      var isPanelActive = key === id;
+      panel.classList.toggle('is-hidden', !isPanelActive);
+      panel.setAttribute('aria-hidden', isPanelActive ? 'false' : 'true');
+    });
+
+    ssSet(STORAGE_KEY, id);
+
+    if(options.focus){
+      var heading = panels[id].querySelector('h2');
+      if(heading && typeof heading.focus === 'function'){
+        try { heading.focus({ preventScroll: true }); }
+        catch(err){ heading.focus(); }
+      }
+      if(typeof panels[id].scrollIntoView === 'function'){
+        panels[id].scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      }
+    }
+  }
+
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = btn.dataset.target;
+      if(!target){ return; }
+      activate(target, { focus: true, force: true });
+      if(window.location.hash !== '#' + target){
+        try {
+          window.location.hash = target;
+        } catch(err){}
+      }
+    });
+  });
+
+  tabList.addEventListener('keydown', function(event){
+    var key = event.key;
+    if(key !== 'ArrowRight' && key !== 'ArrowLeft' && key !== 'Home' && key !== 'End'){ return; }
+    var current = document.activeElement;
+    var index = buttons.indexOf(current);
+    if(index === -1){ return; }
+    event.preventDefault();
+    if(key === 'Home'){ buttons[0].focus(); return; }
+    if(key === 'End'){ buttons[buttons.length - 1].focus(); return; }
+    var dir = key === 'ArrowRight' ? 1 : -1;
+    var next = (index + dir + buttons.length) % buttons.length;
+    buttons[next].focus();
+  });
+
+  function syncFromHash(options){
+    options = options || {};
+    var hash = window.location.hash ? window.location.hash.substring(1) : '';
+    if(hash && panels[hash]){
+      activate(hash, { focus: !!options.focus, force: true });
+      return true;
+    }
+    return false;
+  }
+
+  window.addEventListener('hashchange', function(){
+    syncFromHash({ focus: true });
+  });
+
+  var anchorSelector = 'a[href="#peo-y9"], a[href="#peo-y9-sequenced"]';
+  $$(anchorSelector).forEach(function(anchor){
+    anchor.addEventListener('click', function(event){
+      var href = anchor.getAttribute('href') || '';
+      var target = href.charAt(0) === '#' ? href.substring(1) : href;
+      if(!panels[target]){ return; }
+      event.preventDefault();
+      activate(target, { focus: true, force: true });
+      if(window.location.hash !== '#' + target){
+        try {
+          window.location.hash = target;
+        } catch(err){}
+      }
+    });
+  });
+
+  if(!syncFromHash({ focus: false })){
+    var stored = ssGet(STORAGE_KEY, buttons[0].dataset.target);
+    if(!stored || !panels[stored]){ stored = buttons[0].dataset.target; }
+    activate(stored, { force: true });
+  }
+}
+
 function renderOverview(root){
   root.innerHTML = ''+
   '<div class="grid lg:grid-cols-2 gap-6">' +
@@ -785,6 +947,8 @@ $('#loadSaPresetBtn').addEventListener('click', function(){
     notify('Sorry — failed to load the SA preset. See console for details.');
   }
 });
+
+initActivityTabs();
 
 // --- Self-tests (basic runtime checks) ---
 function runSelfTests(){
