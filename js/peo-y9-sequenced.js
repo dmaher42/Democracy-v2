@@ -56,26 +56,61 @@
   if(searchInput){ searchInput.value = state.searchTerm; }
   focusHeadingForHash();
 
-  fetch('data/peo-y9-sequenced.json')
-    .then(function(response){
-      if(!response.ok){ throw new Error('Network response was not ok'); }
-      return response.json();
-    })
-    .then(function(data){
-      initialiseData(data);
+  const DATA_URL = 'data/peo-y9-sequenced.json';
+  const embeddedData = typeof window !== 'undefined' ? window.__PEO_Y9_SEQUENCED__ : null;
+
+  loadSequenceData();
+
+  function loadSequenceData(){
+    fetch(DATA_URL)
+      .then(function(response){
+        if(!response.ok){ throw new Error('Network response was not ok'); }
+        return response.json();
+      })
+      .then(function(data){
+        initialiseData(data);
+        populateWeekSelect();
+        renderSequence();
+      })
+      .catch(function(error){
+        if(tryFallbackData(error)){
+          return;
+        }
+        showSequenceLoadError(error);
+      });
+  }
+
+  function tryFallbackData(originalError){
+    if(!embeddedData){ return false; }
+    let fallbackCopy = null;
+    try {
+      fallbackCopy = JSON.parse(JSON.stringify(embeddedData));
+    } catch(cloneError){
+      console.error('Unable to clone embedded sequenced data', cloneError);
+      return false;
+    }
+
+    try {
+      initialiseData(fallbackCopy);
       populateWeekSelect();
       renderSequence();
-    })
-    .catch(function(error){
-      console.error('Unable to load PEO sequenced activities', error);
-      if(grid){
-        grid.innerHTML = '';
-        const message = document.createElement('div');
-        message.className = 'empty-state';
-        message.textContent = 'We could not load the sequenced plan right now. Please refresh to try again.';
-        grid.appendChild(message);
-      }
-    });
+      console.warn('Loaded sequenced PEO activities from embedded fallback because fetching "' + DATA_URL + '" failed.', originalError);
+      return true;
+    } catch(fallbackError){
+      console.error('Unable to initialise PEO sequenced data from embedded fallback', fallbackError);
+      return false;
+    }
+  }
+
+  function showSequenceLoadError(error){
+    console.error('Unable to load PEO sequenced activities', error);
+    if(!grid){ return; }
+    grid.innerHTML = '';
+    const message = document.createElement('div');
+    message.className = 'empty-state';
+    message.textContent = 'We could not load the sequenced plan right now. Please refresh to try again.';
+    grid.appendChild(message);
+  }
 
   function attachEventListeners(){
     if(weekSelect){

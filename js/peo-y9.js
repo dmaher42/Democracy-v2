@@ -51,24 +51,60 @@
   updateFavoritesButton();
   focusHeadingForHash();
 
-  fetch('data/peo-y9-activities.json')
-    .then(function(response){
-      if(!response.ok){ throw new Error('Network response was not ok'); }
-      return response.json();
-    })
-    .then(function(data){
-      initialiseData(data);
+  const DATA_URL = 'data/peo-y9-activities.json';
+  const embeddedData = typeof window !== 'undefined' ? window.__PEO_Y9_ACTIVITIES__ : null;
+
+  loadActivitiesData();
+
+  function loadActivitiesData(){
+    fetch(DATA_URL)
+      .then(function(response){
+        if(!response.ok){ throw new Error('Network response was not ok'); }
+        return response.json();
+      })
+      .then(function(data){
+        initialiseData(data);
+        populateFilters();
+        renderActivities({ preserveOpen: false });
+      })
+      .catch(function(error){
+        if(tryFallbackData(error)){
+          return;
+        }
+        showActivitiesLoadError(error);
+      });
+  }
+
+  function tryFallbackData(originalError){
+    if(!embeddedData){ return false; }
+    let fallbackCopy = null;
+    try {
+      fallbackCopy = JSON.parse(JSON.stringify(embeddedData));
+    } catch(cloneError){
+      console.error('Unable to clone embedded PEO activities data', cloneError);
+      return false;
+    }
+
+    try {
+      initialiseData(fallbackCopy);
       populateFilters();
       renderActivities({ preserveOpen: false });
-    })
-    .catch(function(error){
-      console.error('Unable to load PEO activities', error);
-      grid.innerHTML = '';
-      const message = document.createElement('div');
-      message.className = 'empty-state';
-      message.textContent = 'We could not load the PEO activities right now. Please refresh to try again.';
-      grid.appendChild(message);
-    });
+      console.warn('Loaded PEO activities from embedded fallback because fetching "' + DATA_URL + '" failed.', originalError);
+      return true;
+    } catch(fallbackError){
+      console.error('Unable to initialise PEO activities from embedded data', fallbackError);
+      return false;
+    }
+  }
+
+  function showActivitiesLoadError(error){
+    console.error('Unable to load PEO activities', error);
+    grid.innerHTML = '';
+    const message = document.createElement('div');
+    message.className = 'empty-state';
+    message.textContent = 'We could not load the PEO activities right now. Please refresh to try again.';
+    grid.appendChild(message);
+  }
 
   function initialiseData(data){
     if(!data || !Array.isArray(data.topics)){ return; }
