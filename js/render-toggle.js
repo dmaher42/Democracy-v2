@@ -25,9 +25,12 @@
     const loadBtn = Array.from(document.querySelectorAll('button, .btn, .button'))
       .find(b => /\bload\b/i.test(b.textContent || ''));
     if (loadBtn) {
-      toggle.className = '';
-      loadBtn.classList.forEach(c => toggle.classList.add(c));
+      loadBtn.classList.forEach(c => {
+        if (c && !toggle.classList.contains(c)) toggle.classList.add(c);
+      });
     }
+    toggle.classList.add('btn');
+    toggle.classList.add('btn-primary');
   }
 
   function getInitialView() {

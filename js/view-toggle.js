@@ -8,10 +8,14 @@
     const loadBtn = Array.from(document.querySelectorAll('button, .btn, .button'))
       .find(b => /\bload\b/i.test(b.textContent || ''));
     const toggle = $('#toggleViewBtn');
-    if (loadBtn && toggle) {
-      toggle.className = ''; // reset
-      loadBtn.classList.forEach(c => toggle.classList.add(c));
+    if (!toggle) return;
+    if (loadBtn) {
+      loadBtn.classList.forEach(c => {
+        if (c && !toggle.classList.contains(c)) toggle.classList.add(c);
+      });
     }
+    toggle.classList.add('btn');
+    toggle.classList.add('btn-primary');
   }
 
   function getInitialView() {
