@@ -1,24 +1,34 @@
 (function(){
   const VIEW_KEY = 'y9_view'; // localStorage key
 
-  // Helper: query
   const $ = (s, r=document) => r.querySelector(s);
 
-  // Read initial view from ?view= or localStorage, default to 8week
+  // Try to style-match the existing "Load" button by cloning its classes
+  function styleMatchLoadButton() {
+    const loadBtn = Array.from(document.querySelectorAll('button, .btn, .button'))
+      .find(b => /\bload\b/i.test(b.textContent || ''));
+    const toggle = $('#toggleViewBtn');
+    if (loadBtn && toggle) {
+      toggle.className = ''; // reset
+      loadBtn.classList.forEach(c => toggle.classList.add(c));
+    }
+  }
+
   function getInitialView() {
+    // 1) URL param
     try {
-      const url = new URL(location.href);
-      const q = (url.searchParams.get('view') || '').toLowerCase();
+      const q = new URL(location.href).searchParams.get('view');
       if (q === '8week' || q === 'dispositions') return q;
     } catch {}
+    // 2) Stored
     try {
       const saved = localStorage.getItem(VIEW_KEY);
       if (saved === '8week' || saved === 'dispositions') return saved;
     } catch {}
+    // 3) Default
     return '8week';
   }
 
-  // Show/hide sections with accessibility attributes
   function setSectionVisible(el, on) {
     if (!el) return;
     el.hidden = !on;
@@ -27,11 +37,11 @@
 
   async function fetchJSON(path) {
     const res = await fetch(path, { cache: 'no-store' });
-    if (!res.ok) throw new Error('Fetch failed: ' + path);
+    if (!res.ok) throw new Error('Failed to fetch ' + path);
     return res.json();
   }
 
-  // Optionally (re)render each view if hooks exist
+  // Optional hooks if you have renderers and JSON paths
   async function renderIfAvailable(view) {
     if (view === '8week') {
       if (typeof window.render8Week === 'function') {
@@ -50,23 +60,6 @@
     }
   }
 
-  async function applyView(v) {
-    const week = $('#weekView');
-    const disp  = $('#dispView');
-    const btn  = $('#toggleViewBtn');
-
-    setSectionVisible(week, v === '8week');
-    setSectionVisible(disp,  v === 'dispositions');
-
-    if (btn) {
-      btn.textContent = (v === '8week') ? 'Switch to Dispositions' : 'Switch to 8-Week Plan';
-      btn.setAttribute('aria-pressed', String(v === 'dispositions'));
-    }
-
-    // optional: (re)render for the active view
-    await renderIfAvailable(v);
-  }
-
   function setUrlParam(view) {
     try {
       const url = new URL(location.href);
@@ -75,9 +68,29 @@
     } catch {}
   }
 
+  async function applyView(view) {
+    const week = $('#weekView');
+    const disp  = $('#dispView');
+    const btn  = $('#toggleViewBtn');
+
+    setSectionVisible(week, view === '8week');
+    setSectionVisible(disp,  view === 'dispositions');
+
+    if (btn) {
+      btn.textContent = (view === '8week') ? 'Switch to Dispositions' : 'Switch to 8-Week Plan';
+      btn.setAttribute('aria-pressed', String(view === 'dispositions'));
+    }
+
+    await renderIfAvailable(view);
+  }
+
   async function init() {
-    const btn = $('#toggleViewBtn');
-    if (!$('#weekView') || !$('#dispView') || !btn) return; // graceful no-op if structure missing
+    const week = $('#weekView');
+    const disp = $('#dispView');
+    const btn  = $('#toggleViewBtn');
+    if (!week || !disp || !btn) return; // graceful no-op if structure isn’t ready
+
+    styleMatchLoadButton();
 
     let view = getInitialView();
     await applyView(view);
@@ -89,11 +102,6 @@
       await applyView(view);
     });
   }
-
-  // Expose optional paths if you plan to lazy-load JSON
-  // Example (set these in your page script elsewhere):
-  // window.DATA_8WEEK_PATH = 'data/8week.json';
-  // window.DATA_DISP_PATH  = 'data/dispositions.json';
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
