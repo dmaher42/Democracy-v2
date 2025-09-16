@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/peo-y9.css" />
   <script defer src="js/peo-y9.js"></script>
+  <script defer src="js/peo-y9-sequenced.js"></script>
   <style>
     :root{ --ring: 219 14% 28%; }
     .focus-ring:focus{ outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
@@ -50,6 +51,9 @@
           <li>
             <a class="rounded-lg px-3 py-2 hover:bg-slate-100 focus-ring" href="#peo-y9">PEO Year 9 Activities</a>
           </li>
+          <li>
+            <a class="rounded-lg px-3 py-2 hover:bg-slate-100 focus-ring" href="#peo-y9-sequenced">PEO Y9 – Sequenced</a>
+          </li>
         </ul>
       </div>
     </nav>
@@ -92,6 +96,22 @@
 
       <!-- Rendered cards go here -->
       <div id="activitiesGrid" class="grid"></div>
+    </section>
+
+    <section id="peo-y9-sequenced" class="section">
+      <h2 tabindex="-1">PEO Year 9 – Sequenced Activities</h2>
+
+      <div class="controls">
+        <label class="sr-only" for="sequenceWeek">Jump to week</label>
+        <select id="sequenceWeek"></select>
+
+        <input id="searchSeq" type="search" placeholder="Search activities, aims, tags…" aria-label="Search activities" />
+        <button id="toggleTeacherMode2" aria-pressed="false">Teacher Mode: Off</button>
+        <button id="showFavorites2" aria-pressed="false">Show Favourites</button>
+        <button id="printSelected2">Print/Export Selected</button>
+      </div>
+
+      <div id="seqGrid" class="grid"></div>
     </section>
   </main>
 
