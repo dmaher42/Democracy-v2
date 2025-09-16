@@ -31,11 +31,23 @@
           <summary class="btn btn-outline focus-ring cursor-pointer list-none" aria-haspopup="true" aria-expanded="false">More actions</summary>
           <div class="absolute right-0 z-10 mt-2 flex w-56 flex-col gap-2 rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-xl">
             <button id="printBtn" type="button" class="btn btn-outline focus-ring w-full justify-start text-left" title="Print">Print</button>
-            <button id="exportBtn" type="button" class="btn btn-outline focus-ring w-full justify-start text-left" title="Export JSON">Export JSON</button>
-            <label class="btn btn-outline focus-ring cursor-pointer w-full justify-start text-left" title="Import JSON">
-              Import JSON
-              <input id="importInput" type="file" accept="application/json" class="hidden" />
-            </label>
+            <details class="relative" data-export-menu>
+              <summary
+                class="btn btn-outline focus-ring w-full list-none justify-between text-left"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <span>Export/Import</span>
+                <span aria-hidden="true" class="text-xs text-slate-500">▾</span>
+              </summary>
+              <div class="absolute right-0 z-10 mt-2 flex w-56 flex-col gap-2 rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-xl">
+                <button id="exportBtn" type="button" class="btn btn-outline focus-ring w-full justify-start text-left" title="Export JSON">Export JSON</button>
+                <label class="btn btn-outline focus-ring cursor-pointer w-full justify-start text-left" title="Import JSON">
+                  Import JSON
+                  <input id="importInput" type="file" accept="application/json" class="hidden" />
+                </label>
+              </div>
+            </details>
           </div>
         </details>
         <button id="loadSaPresetBtn" class="btn btn-primary focus-ring" title=">Equal Before the Law?">
@@ -1003,7 +1015,7 @@ function renderDiff(root){
 }
 
 function renderResources(root){
-  root.innerHTML = card('Teacher Notes', '<p class="text-sm">Use the Export button to save this plan as JSON. Import later to continue editing. Print generates a clean copy for PDP evidence or sharing.</p>\
+  root.innerHTML = card('Teacher Notes', '<p class="text-sm">Use the Export/Import menu to save this plan as JSON or bring in updates. Print generates a clean copy for PDP evidence or sharing.</p>\
   <ul class="list-disc pl-5 text-sm space-y-1 mt-2">\
     <li>Action project ideas: student voice survey, fairness policy explainer, media literacy mini-campaign, peer court role-play.</li>\
     <li>Embed digital tools students enjoy (Canva, Google Slides, Minecraft civic-space builds).</li>\
@@ -1182,11 +1194,21 @@ $('#exportBtn').addEventListener('click', function(){
   var blob = new Blob([JSON.stringify(plan, null, 2)], {type:'application/json'});
   var url = URL.createObjectURL(blob);
   var a=document.createElement('a'); a.href=url; a.download = (plan.meta.title || 'unit-plan').replace(/[^a-z0-9]+/gi,'-') + '.json'; a.click(); URL.revokeObjectURL(url);
+  notify('Exported unit plan JSON.');
 });
 $('#importInput').addEventListener('change', function(e){
   var files = e.target.files; var f = files && files[0]; if(!f) return;
   var r=new FileReader();
-  r.onload=function(){ try{ plan = preparePlan(JSON.parse(r.result)); saveState(); render(); }catch(err){ alert('Invalid JSON'); } };
+  r.onload=function(){
+    try{
+      plan = preparePlan(JSON.parse(r.result));
+      saveState();
+      render();
+      notify('Imported unit plan JSON.');
+    }catch(err){
+      alert('Invalid JSON');
+    }
+  };
   r.readAsText(f);
 });
 $('#quickEdit').addEventListener('click', function(){
@@ -1215,6 +1237,22 @@ if(moreMenu){
         moreMenu.removeAttribute('open');
         if(moreSummary){ moreSummary.focus(); }
       }, 0);
+    }
+  });
+}
+var exportMenu = document.querySelector('details[data-export-menu]');
+if(exportMenu){
+  var exportSummary = exportMenu.querySelector('summary');
+  var syncExportSummary = function(){
+    if(!exportSummary){ return; }
+    exportSummary.setAttribute('aria-expanded', exportMenu.hasAttribute('open') ? 'true' : 'false');
+  };
+  syncExportSummary();
+  exportMenu.addEventListener('toggle', syncExportSummary);
+  exportMenu.addEventListener('click', function(e){
+    var trigger = e.target.closest('button, label');
+    if(trigger && exportMenu.hasAttribute('open')){
+      setTimeout(function(){ exportMenu.removeAttribute('open'); }, 0);
     }
   });
 }
