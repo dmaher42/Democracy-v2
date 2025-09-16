@@ -1,16 +1,18 @@
 :root {
   /* Australian Green & Gold (accessible set) */
-  --green-600: #006b3f;
-  --green-700: #004d2b;
+  --green: #006B3F;
+  --green-700: #004D2B;
+  --green-600: var(--green);
   --green-300: #35a56b;
-  --gold-500: #ffcd00;
-  --gold-600: #e6b800;
+  --gold: #FFCD00;
+  --gold-600: #E6B800;
+  --gold-500: var(--gold);
   --ink: #0f172a;
   --ink-2: #1a1a1a;
   --bg: #ffffff;
   --muted: #475569;
   --border: #e2e8f0;
-  --ring: #ffcd00;
+  --ring: var(--gold);
   --header-h: 0px;
 }
 
@@ -42,7 +44,7 @@ section[id] {
 header.site-header {
   background: var(--green-700);
   color: #fff;
-  border-bottom: 3px solid var(--gold-500);
+  border-bottom: 3px solid var(--gold);
 }
 
 header.site-header h1,
@@ -60,7 +62,7 @@ header.site-header nav a {
 }
 
 header.site-header nav a:hover {
-  color: var(--gold-500);
+  color: var(--gold);
   background-color: rgba(255, 255, 255, 0.12);
 }
 
@@ -92,9 +94,9 @@ details.more-menu > summary::-webkit-details-marker {
 }
 
 .btn-primary {
-  background: var(--gold-500);
+  background: var(--gold);
   color: var(--ink-2);
-  border-color: var(--gold-500);
+  border-color: var(--gold);
 }
 
 .btn-primary:hover {
@@ -103,9 +105,9 @@ details.more-menu > summary::-webkit-details-marker {
 }
 
 .btn-secondary {
-  background: var(--green-600);
+  background: var(--green);
   color: #fff;
-  border-color: var(--green-600);
+  border-color: var(--green);
 }
 
 .btn-secondary:hover {
@@ -135,14 +137,14 @@ details.more-menu > summary::-webkit-details-marker {
 }
 
 .tab[aria-selected="true"] {
-  background: var(--gold-500);
+  background: var(--gold);
   color: var(--ink-2);
-  border-color: var(--gold-500);
+  border-color: var(--gold);
 }
 
 .chip {
   background: rgba(255, 205, 0, 0.12);
-  border: 1px solid var(--gold-500);
+  border: 1px solid var(--gold);
   color: var(--ink);
 }
 
@@ -151,7 +153,7 @@ a {
 }
 
 a:hover {
-  color: var(--green-600);
+  color: var(--green);
 }
 
 .card {
@@ -170,7 +172,7 @@ a:hover {
 
 .bg-gold,
 .alert-gold {
-  background: var(--gold-500);
+  background: var(--gold);
   color: var(--ink-2);
 }
 
@@ -507,8 +509,8 @@ a:hover {
 }
 
 .favorite-btn[aria-pressed="true"] {
-  background-color: var(--gold-500);
-  border-color: var(--gold-500);
+  background-color: var(--gold);
+  border-color: var(--gold);
   color: var(--ink-2);
 }
 
