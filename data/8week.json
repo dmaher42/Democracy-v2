@@ -1,0 +1,303 @@
+{
+  "weeks": [
+    {
+      "week": 1,
+      "title": "Media Literacy",
+      "lessons": [
+        {
+          "id": "wk1-media-bias-starter",
+          "title": "Facts vs Opinion + Bias Starter",
+          "duration": "30–45 min",
+          "tags": [
+            "media",
+            "bias",
+            "critical-thinking"
+          ],
+          "objectives": [
+            "Differentiate fact vs opinion in current news",
+            "Identify bias and techniques in headlines"
+          ],
+          "steps": [
+            "Hook: two contrasting headlines; quick decide ‘fact/opinion’ and why.",
+            "Pairs annotate a mixed set; highlight claims, evidence, emotive language.",
+            "Whole class: build a mini ‘bias bingo’ list for future spotting."
+          ],
+          "successCriteria": [
+            "I can label statements as fact/opinion with reasons",
+            "I can name one bias technique used in a headline"
+          ],
+          "standardsRefs": [
+            "PEO Y9 Units"
+          ]
+        },
+        {
+          "id": "wk1-news-diet",
+          "title": "News Diet Challenge (48-hour)",
+          "duration": "Homework + 20 min debrief",
+          "tags": [
+            "media",
+            "metacognition"
+          ],
+          "objectives": [
+            "Audit personal news intake",
+            "Plan one improvement to balance sources"
+          ],
+          "steps": [
+            "Students track sources for 48h.",
+            "Pairs swap logs, classify and suggest one improvement.",
+            "Debrief: share common patterns and quick wins."
+          ],
+          "successCriteria": [
+            "I can categorise sources by type and reliability",
+            "I can name one concrete change to improve my news diet"
+          ],
+          "standardsRefs": [
+            "PEO Y9 Units – Media"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "title": "Political Parties",
+      "lessons": [
+        {
+          "id": "wk2-parties-frayer",
+          "title": "Frayer Model: Party Ideology",
+          "duration": "45–60 min",
+          "tags": [
+            "ideology",
+            "compare-contrast"
+          ],
+          "objectives": [
+            "Define key ideological terms and apply with examples",
+            "Compare policy positions across parties"
+          ],
+          "steps": [
+            "Assign terms/parties to groups; complete Frayer.",
+            "Gallery walk with ‘two stars and a wish’.",
+            "Class builds a comparative table for one policy (e.g., climate)."
+          ],
+          "successCriteria": [
+            "I can complete a Frayer with clear examples/non-examples",
+            "I can contrast two parties on one policy area"
+          ],
+          "standardsRefs": [
+            "PEO – Parties"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "title": "Parliament & Law-Making",
+      "lessons": [
+        {
+          "id": "wk3-bill-simulation",
+          "title": "How a Bill Becomes Law – Role-Play",
+          "duration": "60–90 min",
+          "tags": [
+            "parliament",
+            "procedure",
+            "debate"
+          ],
+          "objectives": [
+            "Explain stages of a bill",
+            "Experience debate, amendment and voting processes"
+          ],
+          "steps": [
+            "Assign roles (Speaker/President, Govt/Opposition, Crossbench, Clerks, Whips, Media).",
+            "Run through readings, debate, optional committee, amendments, vote.",
+            "Debrief: map our simulation to the official process."
+          ],
+          "successCriteria": [
+            "I can name the main stages and what happens at each",
+            "I can describe the purpose of amendments and committees"
+          ],
+          "standardsRefs": [
+            "PEO – Making Laws"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "title": "Integration",
+      "lessons": [
+        {
+          "id": "wk4-cards-against-calamity-bridge",
+          "title": "Bridge: From Bill Process → Policy Trade-offs (Cards Against Calamity)",
+          "duration": "60 min",
+          "tags": [
+            "simulation",
+            "stakeholders",
+            "reasoning"
+          ],
+          "objectives": [
+            "Connect legislative steps to real policy trade-offs",
+            "Practice stakeholder reasoning and justification"
+          ],
+          "steps": [
+            "Teams play a shortened round focused on one issue.",
+            "Each decision logged with ‘who benefits / who loses / evidence’.",
+            "Share-out: connect decisions to potential legislative amendments."
+          ],
+          "successCriteria": [
+            "I can justify a policy choice with stakeholder evidence",
+            "I can explain how an amendment could shift outcomes"
+          ],
+          "standardsRefs": []
+        }
+      ]
+    },
+    {
+      "week": 5,
+      "title": "Courts & Justice",
+      "lessons": [
+        {
+          "id": "wk5-courts-mock-hearing",
+          "title": "Mock Hearing: Courts Support Democracy",
+          "duration": "45–70 min",
+          "tags": [
+            "rule-of-law",
+            "fairness"
+          ],
+          "objectives": [
+            "Identify court roles and processes",
+            "Explain rule of law and judicial independence"
+          ],
+          "steps": [
+            "Groups stage a short hearing with set roles.",
+            "Observers complete fairness/due-process checklist.",
+            "Compare outcomes; discuss consistency and appeals."
+          ],
+          "successCriteria": [
+            "I can describe roles in a hearing",
+            "I can use the term ‘judicial independence’ correctly"
+          ],
+          "standardsRefs": [
+            "PEO – Courts & Justice"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 6,
+      "title": "Citizen Participation",
+      "lessons": [
+        {
+          "id": "wk6-citizen-petition-plan",
+          "title": "Petition & Lobby Plan (Local Issue)",
+          "duration": "50–70 min",
+          "tags": [
+            "advocacy",
+            "civics-action"
+          ],
+          "objectives": [
+            "Map an issue, stakeholders and lawful action pathway",
+            "Draft a persuasive petition and outreach plan"
+          ],
+          "steps": [
+            "Choose a local issue; map stakeholders/decision-makers.",
+            "Draft petition text (clear ask, reasons, evidence).",
+            "Plan outreach (meetings/letters/social media etiquette)."
+          ],
+          "successCriteria": [
+            "I can write a clear ‘ask’ with reasons and evidence",
+            "I can identify decision-makers and next steps"
+          ],
+          "standardsRefs": [
+            "PEO – Participation"
+          ]
+        }
+      ]
+    },
+    {
+      "week": 7,
+      "title": "Assessment",
+      "lessons": [
+        {
+          "id": "wk7-summative-inquiry",
+          "title": "Civics Inquiry (Student Choice Product)",
+          "duration": "Multi-lesson",
+          "tags": [
+            "inquiry",
+            "communication",
+            "student-choice"
+          ],
+          "objectives": [
+            "Investigate a civics issue and present evidence-based recommendations"
+          ],
+          "steps": [
+            "Define guiding question aligned to content descriptors.",
+            "Collect/evaluate sources; track evidence.",
+            "Present via report, video, podcast, **Minecraft build**, infographic or live talk."
+          ],
+          "successCriteria": [
+            "I can formulate a guiding question",
+            "I can evaluate sources for reliability and bias",
+            "I can present justified recommendations"
+          ],
+          "standardsRefs": []
+        }
+      ]
+    },
+    {
+      "week": 8,
+      "title": "Reflection & Future Action",
+      "lessons": [
+        {
+          "id": "wk8-reflect-trust",
+          "title": "Reflection: Did We Restore Trust?",
+          "duration": "50 min",
+          "tags": [
+            "reflection",
+            "student-voice"
+          ],
+          "objectives": [
+            "Reflect on growth in understanding of democratic systems and civic identity",
+            "Evaluate the impact of our civic action project using evidence"
+          ],
+          "steps": [
+            "Revisit Week 1 trust dots and compare shifts in confidence levels.",
+            "Small groups analyse evidence collected during the civic action (surveys, photos, feedback).",
+            "Whole-class dialogue: What changed? What remains to improve?"
+          ],
+          "successCriteria": [
+            "I can cite specific learning moments that shifted my understanding.",
+            "I can describe evidence that shows the effect of our action on community trust."
+          ],
+          "standardsRefs": [
+            "AC9HC9S04",
+            "AC9HC9S05"
+          ]
+        },
+        {
+          "id": "wk8-forward-plan",
+          "title": "Planning the Next Steps",
+          "duration": "45 min",
+          "tags": [
+            "civic-action",
+            "planning"
+          ],
+          "objectives": [
+            "Identify sustainable ways to continue civic participation beyond the unit",
+            "Set personal and class commitments that embed democratic dispositions"
+          ],
+          "steps": [
+            "Brainstorm future opportunities for advocacy or participation at school.",
+            "Create individual commitment cards outlining one action to take in the next month.",
+            "Compile class pledges into a shared action roadmap and publish to the school community."
+          ],
+          "successCriteria": [
+            "I can articulate a realistic civic action I will take and why it matters.",
+            "I can explain how our class roadmap keeps democracy healthy at school."
+          ],
+          "standardsRefs": [
+            "AC9HC9S04"
+          ]
+        }
+      ]
+    }
+  ]
+}
