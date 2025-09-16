@@ -11,6 +11,19 @@
   --muted: #475569;
   --border: #e2e8f0;
   --ring: #ffcd00;
+  --header-h: 0px;
+}
+
+body.has-fixed-header {
+  padding-top: var(--header-h);
+}
+
+html {
+  scroll-padding-top: calc(var(--header-h) + 8px);
+}
+
+section[id] {
+  scroll-margin-top: calc(var(--header-h) + 8px);
 }
 
 .skip-link {

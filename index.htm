@@ -61,6 +61,29 @@
     </nav>
   </header>
 
+  <script>
+    (function () {
+      const header = document.querySelector('header.site-header');
+      if (!header) return;
+      const root = document.documentElement;
+      const body = document.body;
+
+      const updateHeaderOffset = () => {
+        const height = header.offsetHeight || 0;
+        root.style.setProperty('--header-h', `${height}px`);
+        body.classList.toggle('has-fixed-header', height > 0);
+      };
+
+      updateHeaderOffset();
+      window.addEventListener('resize', updateHeaderOffset);
+
+      if ('ResizeObserver' in window) {
+        const resizeObserver = new ResizeObserver(updateHeaderOffset);
+        resizeObserver.observe(header);
+      }
+    })();
+  </script>
+
   <main id="mainContent" class="max-w-6xl mx-auto p-4">
     <section id="weekView" class="space-y-6">
       <!-- Unit Details Card -->
