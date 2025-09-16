@@ -48,6 +48,16 @@ header.site-header .lead {
   color: #fff;
 }
 
+header.site-header .title-group {
+  flex: 1 1 0%;
+  text-align: center;
+}
+
+header.site-header .title-group h1,
+header.site-header .title-group .lead {
+  text-align: inherit;
+}
+
 header.site-header nav {
   background: rgba(0, 77, 43, 0.92);
   border-top: 1px solid rgba(255, 255, 255, 0.12);
