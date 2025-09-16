@@ -115,12 +115,10 @@
       const header = document.querySelector('header.site-header');
       if (!header) return;
       const root = document.documentElement;
-      const body = document.body;
 
       const updateHeaderOffset = () => {
         const height = header.offsetHeight || 0;
         root.style.setProperty('--header-h', `${height}px`);
-        body.classList.toggle('has-fixed-header', height > 0);
       };
 
       updateHeaderOffset();
