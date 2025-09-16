@@ -10,6 +10,7 @@
   const printBtn = section.querySelector('#printSelected');
   const favoritesBtn = section.querySelector('#filterFavorites');
   const grid = section.querySelector('#activitiesGrid');
+  const resultsSummary = searchInput ? createResultsSummary(searchInput) : null;
 
   const STORAGE_KEYS = {
     teacherMode: 'peoY9.teacherMode',
@@ -67,6 +68,7 @@
       message.className = 'empty-state';
       message.textContent = 'We could not load the PEO activities right now. Please refresh to try again.';
       grid.appendChild(message);
+      updateResultsSummary(0);
     });
 
   function initialiseData(data){
@@ -186,6 +188,7 @@
 
     grid.innerHTML = '';
     if(!state.activities.length){
+      updateResultsSummary(0);
       const empty = document.createElement('div');
       empty.className = 'empty-state';
       empty.textContent = 'No activities available.';
@@ -208,6 +211,8 @@
       }
       return true;
     });
+
+    updateResultsSummary(filtered.length);
 
     if(!filtered.length){
       const empty = document.createElement('div');
@@ -244,7 +249,7 @@
 
       const titleSpan = document.createElement('span');
       titleSpan.className = 'activity-title';
-      titleSpan.textContent = activity.title;
+      titleSpan.innerHTML = highlightText(activity.title, state.searchTerm);
       toggleBtn.appendChild(titleSpan);
 
       const meta = document.createElement('div');
@@ -311,7 +316,7 @@
       if(activity.grouping){
         const grouping = document.createElement('span');
         grouping.className = 'grouping-label';
-        grouping.textContent = 'Grouping: ' + activity.grouping;
+        grouping.innerHTML = 'Grouping: ' + highlightText(activity.grouping, state.searchTerm);
         actions.appendChild(grouping);
       }
 
@@ -344,7 +349,7 @@
         const list = document.createElement('ul');
         activity.objectives.forEach(function(item){
           const li = document.createElement('li');
-          li.textContent = item;
+          li.innerHTML = highlightText(item, state.searchTerm);
           list.appendChild(li);
         });
         objectivesWrap.appendChild(headingEl);
@@ -359,7 +364,7 @@
         const list = document.createElement('ul');
         activity.materials.forEach(function(item){
           const li = document.createElement('li');
-          li.textContent = item;
+          li.innerHTML = highlightText(item, state.searchTerm);
           list.appendChild(li);
         });
         materialsWrap.appendChild(headingEl);
@@ -374,7 +379,7 @@
         const list = document.createElement('ol');
         activity.steps.forEach(function(item){
           const li = document.createElement('li');
-          li.textContent = item;
+          li.innerHTML = highlightText(item, state.searchTerm);
           list.appendChild(li);
         });
         stepsWrap.appendChild(headingEl);
@@ -387,7 +392,10 @@
         const label = document.createElement('strong');
         label.textContent = 'Assessment:';
         assessment.appendChild(label);
-        assessment.appendChild(document.createTextNode(' ' + activity.assessment));
+        assessment.appendChild(document.createTextNode(' '));
+        const description = document.createElement('span');
+        description.innerHTML = highlightText(activity.assessment, state.searchTerm);
+        assessment.appendChild(description);
         body.appendChild(assessment);
       }
 
@@ -404,7 +412,7 @@
           anchor.href = link.url;
           anchor.target = '_blank';
           anchor.rel = 'noopener noreferrer';
-          anchor.innerHTML = labelText + '<span class="outbound-icon" aria-hidden="true">↗</span><span class="sr-only"> opens in a new tab</span>';
+          anchor.innerHTML = highlightText(labelText, state.searchTerm) + '<span class="outbound-icon" aria-hidden="true">↗</span><span class="sr-only"> opens in a new tab</span>';
           list.appendChild(anchor);
         });
         linksWrap.appendChild(headingEl);
@@ -420,7 +428,7 @@
         const strong = document.createElement('strong');
         strong.textContent = 'Teacher tips';
         const text = document.createElement('p');
-        text.textContent = tipText;
+        text.innerHTML = highlightText(tipText, state.searchTerm);
         tip.appendChild(strong);
         tip.appendChild(text);
         body.appendChild(tip);
@@ -666,6 +674,59 @@
     try {
       localStorage.setItem(key, JSON.stringify(arr));
     } catch(e){}
+  }
+
+  function createResultsSummary(input){
+    const summary = document.createElement('span');
+    summary.className = 'results-summary';
+    summary.setAttribute('aria-live', 'polite');
+    summary.hidden = true;
+    input.insertAdjacentElement('afterend', summary);
+    return summary;
+  }
+
+  function updateResultsSummary(count){
+    if(!resultsSummary){ return; }
+    const value = typeof count === 'number' && !isNaN(count) ? count : 0;
+    resultsSummary.hidden = false;
+    resultsSummary.textContent = value === 1 ? '1 result' : value + ' results';
+  }
+
+  function highlightText(text, term){
+    const safeText = text == null ? '' : String(text);
+    const searchTerm = term == null ? '' : String(term);
+    if(!searchTerm){
+      return escapeHTML(safeText);
+    }
+    const lower = safeText.toLowerCase();
+    const searchLower = searchTerm.toLowerCase();
+    if(!searchLower){
+      return escapeHTML(safeText);
+    }
+    let result = '';
+    let index = 0;
+    let matchIndex = lower.indexOf(searchLower, index);
+    while(matchIndex !== -1){
+      result += escapeHTML(safeText.slice(index, matchIndex));
+      result += '<mark>' + escapeHTML(safeText.slice(matchIndex, matchIndex + searchLower.length)) + '</mark>';
+      index = matchIndex + searchLower.length;
+      matchIndex = lower.indexOf(searchLower, index);
+    }
+    result += escapeHTML(safeText.slice(index));
+    return result;
+  }
+
+  function escapeHTML(str){
+    return str.replace(/[&<>"']/g, function(ch){
+      switch(ch){
+        case '&': return '&amp;';
+        case '<': return '&lt;';
+        case '>': return '&gt;';
+        case '"': return '&quot;';
+        case "'": return '&#39;';
+        default: return ch;
+      }
+    });
   }
 
   setTimeout(focusHeadingForHash, 150);

@@ -9,6 +9,7 @@
   const favoritesBtn = section.querySelector('#showFavorites2');
   const printBtn = section.querySelector('#printSelected2');
   const grid = section.querySelector('#seqGrid');
+  const resultsSummary = searchInput ? createResultsSummary(searchInput) : null;
 
   const STORAGE_KEYS = {
     teacherMode: 'peoY9Seq.teacherMode',
@@ -74,6 +75,7 @@
         message.textContent = 'We could not load the sequenced plan right now. Please refresh to try again.';
         grid.appendChild(message);
       }
+      updateResultsSummary(0);
     });
 
   function attachEventListeners(){
@@ -150,6 +152,7 @@
     grid.innerHTML = '';
 
     if(!state.items.length){
+      updateResultsSummary(0);
       const empty = document.createElement('div');
       empty.className = 'empty-state';
       empty.textContent = 'No sequenced activities available yet.';
@@ -172,6 +175,8 @@
       }
       return true;
     });
+
+    updateResultsSummary(filtered.length);
 
     if(!filtered.length){
       const empty = document.createElement('div');
@@ -214,7 +219,7 @@
 
     const title = document.createElement('span');
     title.className = 'activity-title';
-    title.textContent = item.title;
+    title.innerHTML = highlightText(item.title, state.searchTerm);
     toggle.appendChild(title);
 
     const meta = document.createElement('div');
@@ -316,7 +321,7 @@
     if(item.grouping){
       const grouping = document.createElement('p');
       grouping.className = 'grouping-label';
-      grouping.textContent = 'Grouping: ' + item.grouping;
+      grouping.innerHTML = 'Grouping: ' + highlightText(item.grouping, state.searchTerm);
       body.appendChild(grouping);
     }
 
@@ -327,7 +332,7 @@
         body.appendChild(liHeading);
 
         const liParagraph = document.createElement('p');
-        liParagraph.textContent = item.visibleLearning.learningIntentions;
+        liParagraph.innerHTML = highlightText(item.visibleLearning.learningIntentions, state.searchTerm);
         body.appendChild(liParagraph);
       }
 
@@ -339,7 +344,7 @@
         const scList = document.createElement('ul');
         item.visibleLearning.successCriteria.forEach(function(criteria){
           const li = document.createElement('li');
-          li.textContent = criteria;
+          li.innerHTML = highlightText(criteria, state.searchTerm);
           scList.appendChild(li);
         });
         body.appendChild(scList);
@@ -354,7 +359,7 @@
       const objectivesList = document.createElement('ul');
       item.objectives.forEach(function(obj){
         const li = document.createElement('li');
-        li.textContent = obj;
+        li.innerHTML = highlightText(obj, state.searchTerm);
         objectivesList.appendChild(li);
       });
       body.appendChild(objectivesList);
@@ -368,7 +373,7 @@
       const materialsList = document.createElement('ul');
       item.materials.forEach(function(material){
         const li = document.createElement('li');
-        li.textContent = material;
+        li.innerHTML = highlightText(material, state.searchTerm);
         materialsList.appendChild(li);
       });
       body.appendChild(materialsList);
@@ -382,7 +387,7 @@
       const stepsList = document.createElement('ol');
       item.steps.forEach(function(step){
         const li = document.createElement('li');
-        li.textContent = step;
+        li.innerHTML = highlightText(step, state.searchTerm);
         stepsList.appendChild(li);
       });
       body.appendChild(stepsList);
@@ -393,7 +398,10 @@
       const label = document.createElement('strong');
       label.textContent = 'Assessment:';
       assessment.appendChild(label);
-      assessment.appendChild(document.createTextNode(' ' + item.assessment));
+      assessment.appendChild(document.createTextNode(' '));
+      const description = document.createElement('span');
+      description.innerHTML = highlightText(item.assessment, state.searchTerm);
+      assessment.appendChild(description);
       body.appendChild(assessment);
     }
 
@@ -412,7 +420,7 @@
         anchor.href = link.url;
         anchor.target = '_blank';
         anchor.rel = 'noopener noreferrer';
-        anchor.innerHTML = labelText + '<span class="outbound-icon" aria-hidden="true">↗</span><span class="sr-only"> opens in a new tab</span>';
+        anchor.innerHTML = highlightText(labelText, state.searchTerm) + '<span class="outbound-icon" aria-hidden="true">↗</span><span class="sr-only"> opens in a new tab</span>';
         list.appendChild(anchor);
       });
       linksWrap.appendChild(list);
@@ -429,7 +437,7 @@
       const tipsList = document.createElement('ul');
       item.teacherTips.forEach(function(tip){
         const li = document.createElement('li');
-        li.textContent = tip;
+        li.innerHTML = highlightText(tip, state.searchTerm);
         tipsList.appendChild(li);
       });
       tipsWrap.appendChild(tipsList);
@@ -727,6 +735,59 @@
     try {
       localStorage.setItem(key, JSON.stringify(arr));
     } catch(e){}
+  }
+
+  function createResultsSummary(input){
+    const summary = document.createElement('span');
+    summary.className = 'results-summary';
+    summary.setAttribute('aria-live', 'polite');
+    summary.hidden = true;
+    input.insertAdjacentElement('afterend', summary);
+    return summary;
+  }
+
+  function updateResultsSummary(count){
+    if(!resultsSummary){ return; }
+    const value = typeof count === 'number' && !isNaN(count) ? count : 0;
+    resultsSummary.hidden = false;
+    resultsSummary.textContent = value === 1 ? '1 result' : value + ' results';
+  }
+
+  function highlightText(text, term){
+    const safeText = text == null ? '' : String(text);
+    const searchTerm = term == null ? '' : String(term);
+    if(!searchTerm){
+      return escapeHTML(safeText);
+    }
+    const lower = safeText.toLowerCase();
+    const searchLower = searchTerm.toLowerCase();
+    if(!searchLower){
+      return escapeHTML(safeText);
+    }
+    let result = '';
+    let index = 0;
+    let matchIndex = lower.indexOf(searchLower, index);
+    while(matchIndex !== -1){
+      result += escapeHTML(safeText.slice(index, matchIndex));
+      result += '<mark>' + escapeHTML(safeText.slice(matchIndex, matchIndex + searchLower.length)) + '</mark>';
+      index = matchIndex + searchLower.length;
+      matchIndex = lower.indexOf(searchLower, index);
+    }
+    result += escapeHTML(safeText.slice(index));
+    return result;
+  }
+
+  function escapeHTML(str){
+    return str.replace(/[&<>"']/g, function(ch){
+      switch(ch){
+        case '&': return '&amp;';
+        case '<': return '&lt;';
+        case '>': return '&gt;';
+        case '"': return '&quot;';
+        case "'": return '&#39;';
+        default: return ch;
+      }
+    });
   }
 
   setTimeout(focusHeadingForHash, 150);

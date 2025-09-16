@@ -229,6 +229,11 @@ a:hover {
   margin-bottom: 1.5rem;
 }
 
+.controls .results-summary {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
 .controls input[type="search"],
 .controls select {
   border: 1px solid var(--border);
