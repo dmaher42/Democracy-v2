@@ -1,4 +1,4 @@
-:root {
+.theme-green-gold {
   /* Australian Green & Gold (accessible set) */
   --green-600: #006b3f;
   --green-700: #004d2b;
@@ -11,6 +11,21 @@
   --muted: #475569;
   --border: #e2e8f0;
   --ring: #ffcd00;
+}
+
+.theme-aus-flag {
+  /* Australian flag inspired palette */
+  --green-600: #002868;
+  --green-700: #001a5b;
+  --green-300: #3366cc;
+  --gold-500: #bf0a30;
+  --gold-600: #8b081f;
+  --ink: #0f172a;
+  --ink-2: #111827;
+  --bg: #ffffff;
+  --muted: #475569;
+  --border: #d0ddf5;
+  --ring: #bf0a30;
 }
 
 .skip-link {

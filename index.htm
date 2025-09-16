@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/peo-y9.css" />
   <script defer src="js/peo-y9.js"></script>
   <script defer src="js/peo-y9-sequenced.js"></script>
+  <script defer src="js/theme-toggle.js"></script>
   <style>
     @media print {
       header, nav.no-print, .no-print{ display:none !important }
@@ -17,7 +18,7 @@
     }
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-b from-slate-100 to-slate-200 text-slate-900">
+<body class="theme-green-gold min-h-screen bg-gradient-to-b from-slate-100 to-slate-200 text-slate-900">
   <a class="skip-link" href="#mainContent">Skip to content</a>
   <!-- Top Bar -->
   <header class="site-header sticky top-0 z-10 border-b border-slate-200 backdrop-blur bg-white/70">
@@ -33,6 +34,7 @@
           Import JSON
           <input id="importInput" type="file" accept="application/json" class="hidden" />
         </label>
+        <button id="themeToggle" class="btn btn-outline">Switch Theme</button>
         <button id="loadSaPresetBtn" class="btn btn-primary focus-ring" title="Load SA Equal Before the Law?">
           Load SA “Equal Before the Law?”
         </button>
