@@ -27,17 +27,22 @@
         <p id="subtitle" class="lead text-sm text-slate-600">How Australia’s Constitution, courts and civic action uphold equality before the law.</p>
       </div>
       <div class="flex items-center gap-2 no-print">
-        <button id="printBtn" class="btn btn-outline focus-ring" title="Print">Print</button>
-        <button id="exportBtn" class="btn btn-outline focus-ring" title="Export JSON">Export JSON</button>
-        <label class="btn btn-outline focus-ring cursor-pointer" title="Import JSON">
-          Import JSON
-          <input id="importInput" type="file" accept="application/json" class="hidden" />
-        </label>
+        <details class="relative inline-block more-menu">
+          <summary class="btn btn-outline focus-ring cursor-pointer list-none" aria-haspopup="true" aria-expanded="false">More actions</summary>
+          <div class="absolute right-0 z-10 mt-2 flex w-56 flex-col gap-2 rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-xl">
+            <button id="printBtn" type="button" class="btn btn-outline focus-ring w-full justify-start text-left" title="Print">Print</button>
+            <button id="exportBtn" type="button" class="btn btn-outline focus-ring w-full justify-start text-left" title="Export JSON">Export JSON</button>
+            <label class="btn btn-outline focus-ring cursor-pointer w-full justify-start text-left" title="Import JSON">
+              Import JSON
+              <input id="importInput" type="file" accept="application/json" class="hidden" />
+            </label>
+          </div>
+        </details>
         <button id="loadSaPresetBtn" class="btn btn-primary focus-ring" title=">Equal Before the Law?">
           Load SA “Equal Before the Law?”
         </button>
-        <button id="toggleSequenceBtn" class="btn btn-primary focus-ring">4-Week SA Curriculum</button>
-        <button id="toggleViewBtn" class="btn btn-primary focus-ring" aria-pressed="false">
+        <button id="toggleSequenceBtn" class="btn btn-secondary focus-ring">4-Week SA Curriculum</button>
+        <button id="toggleViewBtn" class="btn btn-secondary focus-ring" aria-pressed="false">
           Switch to Dispositions
         </button>
         <button id="bulkResBtn"
@@ -1146,6 +1151,25 @@ $('#curriculumToggle').addEventListener('click', function(e){
 });
 $('#tabs').addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; selectTab(b.dataset.tab); });
 document.getElementById('bulkResBtn').addEventListener('click', openResourcesEditor);
+var moreMenu = document.querySelector('details.more-menu');
+if(moreMenu){
+  var moreSummary = moreMenu.querySelector('summary');
+  var syncMoreSummary = function(){
+    if(!moreSummary){ return; }
+    moreSummary.setAttribute('aria-expanded', moreMenu.hasAttribute('open') ? 'true' : 'false');
+  };
+  syncMoreSummary();
+  moreMenu.addEventListener('toggle', syncMoreSummary);
+  moreMenu.addEventListener('click', function(e){
+    var trigger = e.target.closest('button, label');
+    if(trigger && moreMenu.hasAttribute('open')){
+      setTimeout(function(){
+        moreMenu.removeAttribute('open');
+        if(moreSummary){ moreSummary.focus(); }
+      }, 0);
+    }
+  });
+}
 var toggleSequenceBtn = document.getElementById('toggleSequenceBtn');
 if(toggleSequenceBtn){
   toggleSequenceBtn.addEventListener('click', function(){
