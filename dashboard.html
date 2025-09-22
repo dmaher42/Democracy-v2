@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Civics Unit — Dashboard</title>
+  <meta name="description" content="Unit overview dashboard for Civics: jump into Week 1–8, track progress, and access key resources." />
+  <style>
+    :root{
+      --bg: #f7f7f8; --card:#fff; --ink:#111; --muted:#666; --line:#e6e6e6; --brand:#1a73e8; --ok:#0a7d34; --warn:#c25200;
+      --radius: 16px; --shadow: 0 10px 30px rgba(0,0,0,.06);
+    }
+    *{box-sizing: border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+    a{color:var(--brand);text-decoration:none}
+    header{
+      position:sticky;top:0;z-index:50;background:var(--card);border-bottom:1px solid var(--line);
+      display:flex;align-items:center;gap:1rem;justify-content:space-between;padding:.8rem 1rem
+    }
+    .brand{font-weight:800;color:var(--ink)}
+    .header-actions{display:flex;gap:.5rem;align-items:center}
+    .btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:.5rem .8rem;border-radius:10px;cursor:pointer}
+    .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+    .btn.ghost{background:transparent}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+
+    main{max-width:1100px;margin:0 auto;padding:1rem}
+
+    .hero{display:grid;grid-template-columns:1.3fr .7fr;gap:1rem;align-items:stretch;margin:1rem 0}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem}
+    .hero h1{margin:.25rem 0 .5rem;font-size:clamp(1.4rem,2.5vw,2rem)}
+    .hero p{color:var(--muted);margin:.25rem 0 .75rem}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:.5rem}
+    .stat{background:#fafafa;border:1px solid var(--line);border-radius:12px;padding:.6rem .8rem}
+    .stat .k{font-weight:800}
+
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1rem 0}
+    @media (max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:620px){.grid{grid-template-columns:1fr}}
+
+    .week{display:flex;flex-direction:column;gap:.6rem}
+    .week .title{display:flex;justify-content:space-between;align-items:center}
+    .badge{font-size:.8rem;border:1px solid var(--line);padding:.15rem .45rem;border-radius:999px;color:var(--muted);background:#fafafa}
+    .badge.done{color:#fff;background:var(--ok);border-color:var(--ok)}
+    .badge.inprogress{color:#fff;background:#6a5acd;border-color:#6a5acd}
+
+    .week .actions{display:flex;gap:.5rem;flex-wrap:wrap}
+    .pill{border:1px solid var(--line);border-radius:999px;padding:.35rem .7rem;font-size:.95rem;background:#fff}
+    .week .go{align-self:flex-start}
+
+    .footer{color:var(--muted);font-size:.9rem;margin:2rem 0 1rem}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
+</head>
+<body>
+  <header>
+    <a class="brand" href="./dashboard.html">Civics Unit</a>
+    <nav class="header-actions" aria-label="Quick actions">
+      <button id="continueBtn" class="btn primary">Continue where I left off ▶</button>
+      <button id="resetBtn" class="btn ghost" title="Clear local progress">Reset Progress</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero card">
+      <div>
+        <h1>Unit Overview</h1>
+        <p>Jump into this week's lessons, track your progress, and access key resources. Start with <strong>Week 1</strong> if you're new.</p>
+        <div class="stats">
+          <div class="stat"><div class="k" id="statWeeks">–</div><div class="l">Weeks</div></div>
+          <div class="stat"><div class="k" id="statLessons">–</div><div class="l">Total lessons</div></div>
+          <div class="stat"><div class="k" id="statDone">–</div><div class="l">Completed</div></div>
+        </div>
+      </div>
+      <div class="card" aria-labelledby="quicklinks-h">
+        <h3 id="quicklinks-h" style="margin-top:0">Quick links</h3>
+        <ul style="margin:.25rem 0 0 1rem;line-height:1.9">
+          <li><a href="week1.html">Week 1</a></li>
+          <li><a href="week2.html">Week 2</a></li>
+          <li><a href="week3.html">Week 3</a></li>
+          <li><a href="index.html#activities">Activities Library</a></li>
+          <li><a href="portfolio.html">Portfolio of Work</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <section aria-label="Weeks" class="grid" id="weeksGrid">
+      <!-- Week cards injected here -->
+    </section>
+
+    <p class="footer">Progress is stored locally in your browser (no login required). Teachers can ask students to show their dashboard for a quick status check.</p>
+  </main>
+
+  <script>
+    // --- Configure your unit here ---
+    const UNIT = {
+      title: "Civics Unit",
+      weeks: [
+        { id:"w1", title:"Week 1", href:"week1.html", lessons:["Intro: Equal Before the Law","Rule of Law & Branches","Case Study Warm-ups"] },
+        { id:"w2", title:"Week 2", href:"week2.html", lessons:["Rights & Responsibilities","Courts & Due Process","Reflection Panel"] },
+        { id:"w3", title:"Week 3", href:"week3.html", lessons:["Constitution & Change","Civic Action Examples","Portfolio Check-in"] },
+        // Add more weeks as you build them:
+        // { id:"w4", title:"Week 4", href:"week4.html", lessons:["Constitution Game (Easy)","Video + Reflection","Assessment Prep"] },
+      ]
+    };
+
+    // --- Local progress helpers ---
+    const STORAGE_KEY = "civics_progress_v1"; // bump if you change structure
+    function loadProgress(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; } }
+    function saveProgress(p){ localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }
+
+    // Track last visited week to power "Continue" button
+    function setLastVisited(weekId){ const p=loadProgress(); p.last=weekId; saveProgress(p); }
+    function getLastVisited(){ const p=loadProgress(); return p.last || UNIT.weeks[0]?.id; }
+
+    function getWeekState(weekId){ const p=loadProgress(); return p[weekId] || { done:false, completed:0, total: (UNIT.weeks.find(w=>w.id===weekId)?.lessons?.length||0) }; }
+    function setWeekState(weekId, state){ const p=loadProgress(); p[weekId] = { ...getWeekState(weekId), ...state }; saveProgress(p); renderStats(); }
+
+    // Render week cards
+    const grid = document.getElementById('weeksGrid');
+    function renderWeeks(){
+      grid.innerHTML = '';
+      UNIT.weeks.forEach((w,i)=>{
+        const st = getWeekState(w.id);
+        const badgeClass = st.done? 'badge done' : (st.completed>0? 'badge inprogress':'badge');
+        const badgeText = st.done? 'Complete' : (st.completed>0? `In progress · ${st.completed}/${w.lessons.length}` : 'Not started');
+        const card = document.createElement('article');
+        card.className = 'card week';
+        card.innerHTML = `
+          <div class="title">
+            <h3 style="margin:0">${w.title}</h3>
+            <span class="${badgeClass}">${badgeText}</span>
+          </div>
+          <ul class="actions" aria-label="This week's lessons">
+            ${w.lessons.map((t,idx)=>`<li class="pill">${idx+1}. ${escapeHtml(t)}</li>`).join('')}
+          </ul>
+          <div class="actions">
+            <a class="btn primary go" href="${w.href}" onclick="markVisit('${w.id}')">${i===0? 'Start' : 'Open'}</a>
+            <button class="btn" onclick="toggleComplete('${w.id}')">Mark ${st.done? 'Not Complete' : 'Complete'}</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function renderStats(){
+      const totalWeeks = UNIT.weeks.length;
+      const totalLessons = UNIT.weeks.reduce((a,w)=>a+(w.lessons?.length||0),0);
+      const completed = UNIT.weeks.filter(w=> getWeekState(w.id).done ).length;
+      document.getElementById('statWeeks').textContent = totalWeeks;
+      document.getElementById('statLessons').textContent = totalLessons;
+      document.getElementById('statDone').textContent = `${completed}/${totalWeeks}`;
+    }
+
+    // Actions
+    window.markVisit = function(weekId){ setLastVisited(weekId); };
+    window.toggleComplete = function(weekId){
+      const st = getWeekState(weekId);
+      setWeekState(weekId, { done: !st.done, completed: st.done ? 0 : st.total });
+      renderWeeks();
+    };
+
+    // Header buttons
+    document.getElementById('continueBtn').addEventListener('click', ()=>{
+      const id = getLastVisited();
+      const wk = UNIT.weeks.find(w=>w.id===id) || UNIT.weeks[0];
+      if (wk) location.href = wk.href; 
+    });
+    document.getElementById('resetBtn').addEventListener('click', ()=>{
+      if (confirm('Clear local progress on this device?')){ localStorage.removeItem(STORAGE_KEY); renderWeeks(); renderStats(); }
+    });
+
+    function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]))}
+
+    // First paint
+    renderWeeks();
+    renderStats();
+  </script>
+</body>
+</html>
