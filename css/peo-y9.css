@@ -7,12 +7,19 @@
   --gold: #FFCD00;
   --gold-600: #E6B800;
   --gold-500: var(--gold);
+  --gold-tint-100: rgba(255, 205, 0, 0.12);
+  --gold-tint-200: rgba(255, 205, 0, 0.15);
+  --gold-tint-300: rgba(255, 205, 0, 0.18);
+  --gold-tint-400: rgba(255, 205, 0, 0.28);
+  --gold-border-200: rgba(255, 205, 0, 0.4);
   --ink: #0f172a;
   --ink-2: #1a1a1a;
   --bg: #ffffff;
   --muted: #475569;
   --border: #e2e8f0;
   --ring: var(--gold);
+  --green-tint-100: rgba(0, 107, 63, 0.12);
+  --green-border-200: rgba(0, 107, 63, 0.35);
   --header-h: 0px;
 }
 
@@ -171,7 +178,7 @@ details[data-export-menu] > summary::-webkit-details-marker {
 }
 
 .chip {
-  background: rgba(255, 205, 0, 0.12);
+  background: var(--gold-tint-100);
   border: 1px solid var(--gold);
   color: var(--ink);
 }
@@ -349,9 +356,9 @@ a:hover {
   padding: 0.25rem 0.65rem;
   font-size: 0.75rem;
   font-weight: 600;
-  background-color: rgba(255, 205, 0, 0.12);
+  background-color: var(--gold-tint-100);
   color: var(--ink);
-  border: 1px solid rgba(255, 205, 0, 0.4);
+  border: 1px solid var(--gold-border-200);
 }
 
 .sequence-chip .icon {
@@ -359,9 +366,9 @@ a:hover {
 }
 
 .sequence-chip--week {
-  background-color: rgba(0, 107, 63, 0.12);
+  background-color: var(--green-tint-100);
   color: var(--green-700);
-  border-color: rgba(0, 107, 63, 0.35);
+  border-color: var(--green-border-200);
 }
 
 .sequence-topic {
@@ -485,7 +492,7 @@ a:hover {
 }
 
 .duration-pill {
-  background-color: rgba(255, 205, 0, 0.18);
+  background-color: var(--gold-tint-300);
   color: var(--ink-2);
   border-radius: 999px;
   padding: 0.2rem 0.6rem;
@@ -495,8 +502,8 @@ a:hover {
 
 .favorite-btn {
   align-self: flex-start;
-  background-color: rgba(255, 205, 0, 0.15);
-  border: 1px solid rgba(255, 205, 0, 0.4);
+  background-color: var(--gold-tint-200);
+  border: 1px solid var(--gold-border-200);
   color: var(--ink);
   font-size: 0.95rem;
   font-weight: 700;
@@ -533,7 +540,7 @@ a:hover {
 
 .favorite-btn:hover,
 .favorite-btn:focus-visible {
-  background-color: rgba(255, 205, 0, 0.28);
+  background-color: var(--gold-tint-400);
 }
 
 .favorite-btn[aria-pressed="true"] {
@@ -728,6 +735,12 @@ body.peo-printing .peo-print-activity h2 {
 }
 
 @media (prefers-color-scheme: dark) {
+  :root {
+    --gold-tint-100: rgba(148, 163, 184, 0.2);
+    --gold-tint-300: rgba(148, 163, 184, 0.35);
+    --green-tint-100: rgba(59, 130, 246, 0.25);
+  }
+
   .section {
     background-color: rgba(15, 23, 42, 0.85);
     border-color: rgba(148, 163, 184, 0.4);
@@ -780,7 +793,7 @@ body.peo-printing .peo-print-activity h2 {
   }
 
   .duration-pill {
-    background-color: rgba(148, 163, 184, 0.35);
+    background-color: var(--gold-tint-300);
     color: #f8fafc;
   }
 
@@ -804,12 +817,12 @@ body.peo-printing .peo-print-activity h2 {
   }
 
   .sequence-chip {
-    background-color: rgba(148, 163, 184, 0.2);
+    background-color: var(--gold-tint-100);
     color: #e2e8f0;
   }
 
   .sequence-chip--week {
-    background-color: rgba(59, 130, 246, 0.25);
+    background-color: var(--green-tint-100);
     color: #bfdbfe;
   }
 
