@@ -156,10 +156,12 @@ details[data-export-menu] > summary::-webkit-details-marker {
   border: 1px solid var(--green-700);
   color: var(--green-700);
   background: transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .tab:hover {
   background: rgba(53, 165, 107, 0.12);
+  box-shadow: 0 6px 14px -12px rgba(0, 107, 63, 0.55);
 }
 
 .tab[aria-selected="true"] {
