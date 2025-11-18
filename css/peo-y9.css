@@ -58,10 +58,10 @@ header.site-header .lead {
 header.site-header .title-group {
   flex: 1 1 auto;
   min-width: 16rem;
-  text-align: left;
+  text-align: center;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.15rem;
 }
 
@@ -73,7 +73,7 @@ header.site-header .title-group .lead {
 
 header.site-header .title-group + .no-print {
   flex: 1 1 auto;
-  justify-content: flex-end;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 0.4rem;
 }
@@ -82,13 +82,10 @@ header.site-header .title-group + .no-print {
   header.site-header .title-group {
     flex: 1 1 100%;
     width: 100%;
-    text-align: center;
-    align-items: center;
   }
 
   header.site-header .title-group + .no-print {
     width: 100%;
-    justify-content: center;
   }
 }
 
